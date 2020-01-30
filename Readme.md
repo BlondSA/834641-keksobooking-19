@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
-* Студент: [Антон Стрючков](https://up.htmlacademy.ru/javascript/19/user/834641).
-* Наставник: `Неизвестно`.
+- Студент: [Антон Стрючков](https://up.htmlacademy.ru/javascript/19/user/834641).
+- Наставник: `Сергей Шершнев`.
 
 ---
 
