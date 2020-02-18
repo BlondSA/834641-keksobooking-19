@@ -1,9 +1,10 @@
 'use strict';
 
-document.querySelector('.map').classList.remove('map--faded'); // Убираем класс-модификатор map--faded
+var map = document.querySelector('.map');
+map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
 
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECK_IN_OUT = ['12:00', '13:00', '14:00']; // Массив один для заселения и выезда один, т.к. время въезда = время выезда и наоборот
+var CHECKS = ['12:00', '13:00', '14:00']; // Массив один для заселения и выезда один, т.к. время въезда = время выезда и наоборот
 var MIN_PRICE = 0;
 var MAX_PRICE = 1000000;
 var MIN_ROOMS = 1;
@@ -23,12 +24,19 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
-var NUMBER_HOUSING = 8; // Кол-во вариантов жилья
+var NUMBER_PINS = 8; // Кол-во вариантов жилья
 var MAP_PIN_MIN_Y = 130;
 var MAP_PIN_MAX_Y = 630;
 var MAP_PIN_MIN_X = 0;
 var MAP_SHIFT_PIN_X = 25; // Смещение пина по оси X
 var MAP = document.querySelector('.map');
+var setPinElement = document.querySelector('.map__pins');
+var TYPES_HOUSE = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
 
 // Функция возвращающая случайное число от min до max (Максимум и минимум включаются)
 var getRandomIntInclusive = function (min, max) {
@@ -61,72 +69,108 @@ var getElementWidth = function (element) {
 };
 
 // Создание массива с данными пользователя
-var createUserData = function (number) {
-  var userList = [];
+var createUserData = function () {
+  var pinData = [];
 
-  var author = {
-    avatar: 'img/avatars/user0' + (number + 1) + '.png'
-  };
+  for (var i = 0; i < NUMBER_PINS; i++) {
+    pinData.push({
+      author: {
+        avatar: 'img/avatars/user0' + (i + 1) + '.png'
+      },
 
-  var location = {
-    x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(MAP)),
-    y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
-  };
+      location: {
+        x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(MAP)),
+        y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
+      },
 
-  var offer = {
-    title: 'Заголовок объявления',
-    address: location.x + ',' + location.y, // Локация x и y координаты задаются случаным образом
-    price: getRandomIntInclusive(MIN_PRICE, MAX_PRICE), // Цена за одну ночь
-    type: getRandomElement(TYPES), // Тип жилья
-    rooms: getRandomIntInclusive(MIN_ROOMS, MAX_ROOMS), // Число, количество комнат,
-    guests: getRandomIntInclusive(MIN_GUEST, MAX_GUEST), // Число, количество гостей, которое можно разместить,
-    checkin: getRandomElement(CHECK_IN_OUT), // Время выезда - один случайный элемент массива CHECK_IN_OUT
-    checkout: getRandomElement(CHECK_IN_OUT), // Время выезда - один случайный элемент массива CHECK_IN_OUT
-    features: getRandomArrayElements(FEATURES), // Массив строк случайной длины из ниже предложенных(FEATURES)
-    description: 'Описание', // Строка с описанием
-    photos: getRandomArrayElements(PHOTOS) // Массив строк случайной длины, содержащий адреса фотографий
-  };
-
-  userList.author = author;
-  userList.offer = offer;
-  userList.location = location;
-
-  return userList;
-};
-
-// Функция создающая массив собранных данных пользователей
-var createUsers = function () {
-  var users = [];
-
-  for (var i = 0; i < NUMBER_HOUSING; i++) {
-    users.push(createUserData(i));
+      offer: {
+        title: 'Заголовок объявления',
+        address: location.x + ',' + location.y, // Локация x и y координаты задаются случаным образом
+        price: getRandomIntInclusive(MIN_PRICE, MAX_PRICE), // Цена за одну ночь
+        type: getRandomElement(TYPES), // Тип жилья
+        rooms: getRandomIntInclusive(MIN_ROOMS, MAX_ROOMS), // Число, количество комнат,
+        guests: getRandomIntInclusive(MIN_GUEST, MAX_GUEST), // Число, количество гостей, которое можно разместить,
+        checkin: getRandomElement(CHECKS), // Время выезда - один случайный элемент массива CHECKS
+        checkout: getRandomElement(CHECKS), // Время выезда - один случайный элемент массива CHECKS
+        features: getRandomArrayElements(FEATURES), // Массив строк случайной длины из ниже предложенных(FEATURES)
+        description: 'Описание', // Строка с описанием
+        photos: getRandomArrayElements(PHOTOS) // Массив строк случайной длины, содержащий адреса фотографий
+      }
+    });
   }
 
-  return users;
+  return pinData;
 };
 
-// Создание фрагмента с метками пользователей на основе шаблона и добавление в DOM
+var pinTemplate = document
+  .querySelector('#pin')
+  .content.querySelector('.map__pin');
+
+// Функция создающая массив собранных данных пользователей
+
+var renderPin = function (element) {
+  var pinElement = pinTemplate.cloneNode(true);
+
+  pinElement.style.left = element.location.x - MAP_SHIFT_PIN_X + 'px';
+  pinElement.style.top = element.location.y + 'px';
+  pinElement.querySelector('img').src = element.author.avatar;
+  pinElement.querySelector('img').alt = element.offer.title;
+
+  return pinElement;
+};
+
+var pinsData = createUserData();
+
 var renderPins = function () {
-  var createFragment = document.createDocumentFragment();
-  var users = createUsers();
+  var fragment = document.createDocumentFragment();
 
-  users.forEach(function (element) {
-    var pinElement = document
-      .querySelector('#pin')
-      .content.querySelector('.map__pin')
-      .cloneNode(true);
-    var pinImage = pinElement.querySelector('img');
+  for (var i = 0; i < pinsData.length; i++) {
+    fragment.appendChild(renderPin(pinsData[i]));
+  }
 
-    pinElement.style.left = element.location.x - MAP_SHIFT_PIN_X + 'px';
-    pinElement.style.top = element.location.y + 'px';
-    pinImage.src = element.author.avatar;
-    pinImage.alt = element.offer.title;
-
-    createFragment.appendChild(pinElement);
-  });
-  document.querySelector('.map__pins').appendChild(createFragment);
+  setPinElement.appendChild(fragment);
 };
 
 renderPins();
 
-document.querySelector('.map').classList.remove('map--faded'); // Удаляем класс-модификатор map--faded
+// module3-task3
+
+var cardTemplate = document
+  .querySelector('#card')
+  .content.querySelector('.map__card');
+
+var renderCard = function (element) {
+  var cardElement = cardTemplate.cloneNode(true);
+
+  cardElement.querySelector('.popup__avatar').src = element.author.avatar;
+  cardElement.querySelector('.popup__title').textContent = element.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent =
+    element.offer.address;
+  // Адрес показывает Undefined, Undefined
+  cardElement.querySelector('.popup__text--price').textContent =
+    element.offer.price + '₽/ночь';
+  cardElement.querySelector('.popup__type').textContent =
+    TYPES_HOUSE[element.offer.type];
+  cardElement.querySelector('.popup__text--capacity').textContent =
+    element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей.';
+  cardElement.querySelector('.popup__description').textContent =
+    element.offer.description;
+  cardElement.querySelector('.popup__text--time').textContent =
+    'Заезд после ' +
+    element.offer.checkin +
+    ', выезд до ' +
+    element.offer.checkin +
+    '.'; // checkin сделал один, т.к. в ТЗ сказано что время въезда равно выремя выезда
+
+  // Мне нужно добавить класс для features: getRandomArrayElements(FEATURES) - Массив строк случайной длины из ниже предложенных(FEATURES)
+  // У меня выводит все иконки. А должен только те, которые будет в добавлены в коллекцию для данного элемента
+  // То есть получается, что элементы скопировались с классом и автоматически добавлены в DOM
+  // Получается что нужно, чтобы эти элементы не отображались, если их нет в "features: getRandomArrayElements(FEATURES) - Массив строк случайной длины из ниже предложенных(FEATURES)"
+
+  return cardElement;
+};
+
+var card = renderCard(pinsData[0]);
+
+var mapFiltersContainer = map.querySelector('.map__filters-container');
+map.insertBefore(card, mapFiltersContainer);
