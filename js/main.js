@@ -31,7 +31,7 @@ var MAP_PIN_MIN_X = 0;
 var MAP_SHIFT_PIN_X = 25; // Смещение пина по оси X
 var MAP = document.querySelector('.map');
 var setPinElement = document.querySelector('.map__pins');
-var TYPES_HOUSE = {
+var TypesHouse = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
@@ -71,7 +71,10 @@ var getElementWidth = function (element) {
 // Создание массива с данными пользователя
 var createUserData = function () {
   var pinData = [];
-
+  var location = {
+    x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(MAP)),
+    y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
+  };
   for (var i = 0; i < NUMBER_PINS; i++) {
     pinData.push({
       author: {
@@ -139,18 +142,48 @@ var cardTemplate = document
   .querySelector('#card')
   .content.querySelector('.map__card');
 
+var createNewPhotos = function (photos, photosContainer) {
+  if (photos.length === 0) {
+    photosContainer.style.display = 'none';
+  } else {
+    for (var i = 0; i < photos.length; i++) {
+      var newPopupPhoto = document.createElement('img');
+      newPopupPhoto.className = 'popup__photo';
+      newPopupPhoto.src = photos[i];
+      newPopupPhoto.width = '45';
+      newPopupPhoto.height = '40';
+      newPopupPhoto.alt = 'Фотография жилья';
+      photosContainer.appendChild(newPopupPhoto);
+    }
+  }
+};
+
+var createNewFeatures = function (features, featuresContainer) {
+  if (features.length === 0) {
+    featuresContainer.style.display = 'none';
+  } else {
+    for (var i = 0; i < features.length; i++) {
+      var newPopupFeature = document.createElement('li');
+      newPopupFeature.className =
+        'popup__feature popup__feature--' + features[i];
+      featuresContainer.appendChild(newPopupFeature);
+    }
+  }
+};
+
 var renderCard = function (element) {
   var cardElement = cardTemplate.cloneNode(true);
+  var popupPhotos = cardElement.querySelector('.popup__photos');
+  var popupFeatures = cardElement.querySelector('.popup__features');
 
   cardElement.querySelector('.popup__avatar').src = element.author.avatar;
   cardElement.querySelector('.popup__title').textContent = element.offer.title;
   cardElement.querySelector('.popup__text--address').textContent =
     element.offer.address;
-  // Адрес показывает Undefined, Undefined
   cardElement.querySelector('.popup__text--price').textContent =
     element.offer.price + '₽/ночь';
   cardElement.querySelector('.popup__type').textContent =
-    TYPES_HOUSE[element.offer.type];
+    TypesHouse[element.offer.type];
   cardElement.querySelector('.popup__text--capacity').textContent =
     element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей.';
   cardElement.querySelector('.popup__description').textContent =
@@ -161,12 +194,10 @@ var renderCard = function (element) {
     ', выезд до ' +
     element.offer.checkin +
     '.'; // checkin сделал один, т.к. в ТЗ сказано что время въезда равно выремя выезда
-
-  // Мне нужно добавить класс для features: getRandomArrayElements(FEATURES) - Массив строк случайной длины из ниже предложенных(FEATURES)
-  // У меня выводит все иконки. А должен только те, которые будет в добавлены в коллекцию для данного элемента
-  // То есть получается, что элементы скопировались с классом и автоматически добавлены в DOM
-  // Получается что нужно, чтобы эти элементы не отображались, если их нет в "features: getRandomArrayElements(FEATURES) - Массив строк случайной длины из ниже предложенных(FEATURES)"
-
+  cardElement.querySelector('.popup__features').innerText = '';
+  createNewFeatures(element.offer.features, popupFeatures);
+  cardElement.querySelector('.popup__photos').innerText = '';
+  createNewPhotos(element.offer.photos, popupPhotos);
   return cardElement;
 };
 
