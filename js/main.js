@@ -1,7 +1,6 @@
 'use strict';
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
 
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKS = ['12:00', '13:00', '14:00']; // Массив один для заселения и выезда один, т.к. время въезда = время выезда и наоборот
@@ -37,6 +36,8 @@ var TypesHouse = {
   house: 'Дом',
   bungalo: 'Бунгало'
 };
+var ENTER_BUTTON = 13;
+// var ESC_BUTTON = 27;
 
 // Функция возвращающая случайное число от min до max (Максимум и минимум включаются)
 var getRandomIntInclusive = function (min, max) {
@@ -134,8 +135,6 @@ var renderPins = function () {
   setPinElement.appendChild(fragment);
 };
 
-renderPins();
-
 // module3-task3
 
 var cardTemplate = document
@@ -201,7 +200,52 @@ var renderCard = function (element) {
   return cardElement;
 };
 
-var card = renderCard(pinsData[0]);
+var cardCreate = function () {
+  var card = renderCard(pinsData[0]);
+  var mapFiltersContainer = map.querySelector('.map__filters-container');
+  map.insertBefore(card, mapFiltersContainer); // Добавялем карточку для первого пина
+};
 
-var mapFiltersContainer = map.querySelector('.map__filters-container');
-map.insertBefore(card, mapFiltersContainer);
+// module4-task2
+
+// Добавляем атрибут disabled для Fieldset-ов
+var formHeader = document.querySelector('.ad-form-header');
+formHeader.setAttribute('disabled', 'disabled');
+var formElement = document.querySelectorAll('.ad-form__element');
+for (var i = 0; i < formElement.length; i++) {
+  var formItem = formElement[i];
+  formItem.setAttribute('disabled', 'disabled');
+}
+
+// Выполнение сценария по нажатию на левую клавишу мыши
+var pinMain = document.querySelector('.map__pin—-main');
+pinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === 1) {
+    map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
+    document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
+    renderPins(); // Функция создания 8 случайных пинов
+    cardCreate(); // Функция создания карточки дл первого пина
+    formHeader.removeAttribute('disabled', 'disabled');
+    formElement = document.querySelectorAll('.ad-form__element');
+    for (var j = 0; j < formElement.length; j++) {
+      formItem = formElement[j];
+      formItem.removeAttribute('disabled', 'disabled');
+    }
+  }
+});
+
+// Выполнение сценария по нажатию на Enter
+pinMain.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_BUTTON) {
+    map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
+    document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
+    renderPins(); // Функция создания 8 случайных пинов
+    cardCreate(); // Функция создания карточки дл первого пина
+    formHeader.removeAttribute('disabled', 'disabled');
+    formElement = document.querySelectorAll('.ad-form__element');
+    for (var j = 0; j < formElement.length; j++) {
+      formItem = formElement[j];
+      formItem.removeAttribute('disabled', 'disabled');
+    }
+  }
+});
