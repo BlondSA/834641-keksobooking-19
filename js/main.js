@@ -281,39 +281,39 @@ addressPin.value = coordinateMainPinInactive();
 
 // // Валидация заголовка жилья
 var addForm = document.querySelector('.ad-form');
-// var formTitleInput = addForm.querySelector('#title');
+var formTitleInput = addForm.querySelector('#title');
 
-// formTitleInput.addEventListener('invalid', function () {
-//   if (formTitleInput.validity.tooShort) {
-//     formTitleInput.setCustomValidity(
-//         'Заголовок не должен быть меньше ' + MIN_TITLE_LENGTH + '-ти символов'
-//     );
-//   } else if (formTitleInput.validity.tooLong) {
-//     formTitleInput.setCustomValidity(
-//         'Заголовок не должен быть больше' + MAX_TITLE_LENGTH + 'символов'
-//     );
-//   } else if (formTitleInput.validity.valueMissing) {
-//     formTitleInput.setCustomValidity('Обязательное поле');
-//   } else {
-//     formTitleInput.setCustomValidity('');
-//   }
-// });
+formTitleInput.addEventListener('invalid', function () {
+  if (formTitleInput.validity.tooShort) {
+    formTitleInput.setCustomValidity(
+        'Заголовок не должен быть меньше ' + MIN_TITLE_LENGTH + '-ти символов'
+    );
+  } else if (formTitleInput.validity.tooLong) {
+    formTitleInput.setCustomValidity(
+        'Заголовок не должен быть больше' + MAX_TITLE_LENGTH + 'символов'
+    );
+  } else if (formTitleInput.validity.valueMissing) {
+    formTitleInput.setCustomValidity('Обязательное поле');
+  } else {
+    formTitleInput.setCustomValidity('');
+  }
+});
 
-// formTitleInput.addEventListener('input', function () {
-//   if (formTitleInput.value.length < MIN_TITLE_LENGTH) {
-//     formTitleInput.setCustomValidity(
-//         'Заголовок должен состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов'
-//     );
-//   } else if (formTitleInput.value.length > MAX_TITLE_LENGTH) {
-//     formTitleInput.setCustomValidity(
-//         'Заголовок должен состоять не больше чем из ' +
-//         MAX_TITLE_LENGTH +
-//         ' символов'
-//     );
-//   } else {
-//     formTitleInput.setCustomValidity('');
-//   }
-// });
+formTitleInput.addEventListener('input', function () {
+  if (formTitleInput.value.length < MIN_TITLE_LENGTH) {
+    formTitleInput.setCustomValidity(
+        'Заголовок должен состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов'
+    );
+  } else if (formTitleInput.value.length > MAX_TITLE_LENGTH) {
+    formTitleInput.setCustomValidity(
+        'Заголовок должен состоять не больше чем из ' +
+        MAX_TITLE_LENGTH +
+        ' символов'
+    );
+  } else {
+    formTitleInput.setCustomValidity('');
+  }
+});
 
 // Валидация кол-ва человек в зависимости от кол-ва комнат
 var roomQuantityInput = addForm.querySelector('#room_number');
