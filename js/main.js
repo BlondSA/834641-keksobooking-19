@@ -28,6 +28,12 @@ var MAP_PIN_MIN_Y = 130;
 var MAP_PIN_MAX_Y = 630;
 var MAP_PIN_MIN_X = 0;
 var MAP_SHIFT_PIN_X = 25; // Смещение пина по оси X
+var PIN_MAIN_WIDTH = 62; // Ширина главной метки
+var PIN_MAIN_HEIGHT = 62; // Высота главной метки
+var PIN_MAIN_SHIFT_X = PIN_MAIN_WIDTH / 2; // Смещение круглого главного пина по оси X до центра метки
+var PIN_MAIN_SHIFT_Y = PIN_MAIN_HEIGHT / 2; // Смещение круглого главного пина по оси Y до центра метки
+var PIN_MAIN_POINT_SHIFT_Y = 20; // (высота острия метки) Смещение по оси Y до точки острого конца метки
+var RADIX = 10;
 var MAP = document.querySelector('.map');
 var setPinElement = document.querySelector('.map__pins');
 var TypesHouse = {
@@ -38,6 +44,9 @@ var TypesHouse = {
 };
 var ENTER_BUTTON = 13;
 // var ESC_BUTTON = 27;
+var MOUSE_LEFT_BTN = 0;
+var MIN_TITLE_LENGTH = 30;
+var MAX_TITLE_LENGTH = 100;
 
 // Функция возвращающая случайное число от min до max (Максимум и минимум включаются)
 var getRandomIntInclusive = function (min, max) {
@@ -89,7 +98,7 @@ var createUserData = function () {
 
       offer: {
         title: 'Заголовок объявления',
-        address: location.x + ',' + location.y, // Локация x и y координаты задаются случаным образом
+        address: location.x + ', ' + location.y, // Локация x и y координаты задаются случаным образом
         price: getRandomIntInclusive(MIN_PRICE, MAX_PRICE), // Цена за одну ночь
         type: getRandomElement(TYPES), // Тип жилья
         rooms: getRandomIntInclusive(MIN_ROOMS, MAX_ROOMS), // Число, количество комнат,
@@ -217,35 +226,145 @@ for (var i = 0; i < formElement.length; i++) {
   formItem.setAttribute('disabled', 'disabled');
 }
 
+// Функция активации сценария
+var activeForm = function () {
+  map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
+  document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
+  renderPins(); // Функция создания 8 случайных пинов
+  cardCreate(); // Функция создания карточки дл первого пина
+  formHeader.removeAttribute('disabled', 'disabled');
+  formElement = document.querySelectorAll('.ad-form__element');
+  addressPin.value = coordinateMainPinActive();
+  for (var j = 0; j < formElement.length; j++) {
+    formItem = formElement[j];
+    formItem.removeAttribute('disabled', 'disabled');
+  }
+};
+
 // Выполнение сценария по нажатию на левую клавишу мыши
-var pinMain = document.querySelector('.map__pin—-main');
+var pinMain = document.querySelector('.map__pin--main');
 pinMain.addEventListener('mousedown', function (evt) {
-  if (evt.button === 1) {
-    map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
-    document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
-    renderPins(); // Функция создания 8 случайных пинов
-    cardCreate(); // Функция создания карточки дл первого пина
-    formHeader.removeAttribute('disabled', 'disabled');
-    formElement = document.querySelectorAll('.ad-form__element');
-    for (var j = 0; j < formElement.length; j++) {
-      formItem = formElement[j];
-      formItem.removeAttribute('disabled', 'disabled');
-    }
+  if (evt.button === MOUSE_LEFT_BTN) {
+    activeForm();
   }
 });
 
 // Выполнение сценария по нажатию на Enter
 pinMain.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_BUTTON) {
-    map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
-    document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
-    renderPins(); // Функция создания 8 случайных пинов
-    cardCreate(); // Функция создания карточки дл первого пина
-    formHeader.removeAttribute('disabled', 'disabled');
-    formElement = document.querySelectorAll('.ad-form__element');
-    for (var j = 0; j < formElement.length; j++) {
-      formItem = formElement[j];
-      formItem.removeAttribute('disabled', 'disabled');
-    }
+    activeForm();
+  }
+});
+
+// Функция указания адреса главной круглой метки в неактивном состоянии (центр круглой метки)
+var coordinateMainPinInactive = function () {
+  var pinMainX = Number(parseInt(pinMain.style.left, RADIX)) + PIN_MAIN_SHIFT_X;
+  var pinMainY = Number(parseInt(pinMain.style.top, RADIX)) + PIN_MAIN_SHIFT_Y;
+  return pinMainX + ', ' + pinMainY;
+};
+
+// Функция указания адреса главной круглой метки в неактивном состоянии (центр круглой метки)
+var coordinateMainPinActive = function () {
+  var pinMainX = Number(parseInt(pinMain.style.left, RADIX)) + PIN_MAIN_SHIFT_X;
+  var pinMainY =
+    Number(parseInt(pinMain.style.top, RADIX)) +
+    PIN_MAIN_HEIGHT +
+    PIN_MAIN_POINT_SHIFT_Y;
+  return pinMainX + ', ' + pinMainY;
+};
+
+// Заполнение адрессной строки по умолчанию (в неактивном состоянии)
+var addressPin = document.querySelector('#address');
+addressPin.value = coordinateMainPinInactive();
+
+// Валидация формы ввода
+
+// // Валидация заголовка жилья
+var addForm = document.querySelector('.ad-form');
+// var formTitleInput = addForm.querySelector('#title');
+
+// formTitleInput.addEventListener('invalid', function () {
+//   if (formTitleInput.validity.tooShort) {
+//     formTitleInput.setCustomValidity(
+//         'Заголовок не должен быть меньше ' + MIN_TITLE_LENGTH + '-ти символов'
+//     );
+//   } else if (formTitleInput.validity.tooLong) {
+//     formTitleInput.setCustomValidity(
+//         'Заголовок не должен быть больше' + MAX_TITLE_LENGTH + 'символов'
+//     );
+//   } else if (formTitleInput.validity.valueMissing) {
+//     formTitleInput.setCustomValidity('Обязательное поле');
+//   } else {
+//     formTitleInput.setCustomValidity('');
+//   }
+// });
+
+// formTitleInput.addEventListener('input', function () {
+//   if (formTitleInput.value.length < MIN_TITLE_LENGTH) {
+//     formTitleInput.setCustomValidity(
+//         'Заголовок должен состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов'
+//     );
+//   } else if (formTitleInput.value.length > MAX_TITLE_LENGTH) {
+//     formTitleInput.setCustomValidity(
+//         'Заголовок должен состоять не больше чем из ' +
+//         MAX_TITLE_LENGTH +
+//         ' символов'
+//     );
+//   } else {
+//     formTitleInput.setCustomValidity('');
+//   }
+// });
+
+// Валидация кол-ва человек в зависимости от кол-ва комнат
+var roomQuantityInput = addForm.querySelector('#room_number');
+var guestQuantityInput = addForm.querySelector('#capacity');
+
+addForm.addEventListener('change', function () {
+  if (
+    (roomQuantityInput.value === '1' && guestQuantityInput.value === '2') ||
+    (roomQuantityInput.value === '1' && guestQuantityInput.value === '3') ||
+    (roomQuantityInput.value === '1' && guestQuantityInput.value === '0')
+  ) {
+    guestQuantityInput.setCustomValidity('Только одно спальное место!');
+  } else if (
+    roomQuantityInput.value === '1' &&
+    guestQuantityInput.value === '1'
+  ) {
+    guestQuantityInput.setCustomValidity('');
+  }
+
+  if (
+    (roomQuantityInput.value === '2' && guestQuantityInput.value === '3') ||
+    (roomQuantityInput.value === '2' && guestQuantityInput.value === '0')
+  ) {
+    guestQuantityInput.setCustomValidity('Только два спальных места!');
+  } else if (
+    (roomQuantityInput.value === '2' && guestQuantityInput.value === '2') ||
+    (roomQuantityInput.value === '2' && guestQuantityInput.value === '1')
+  ) {
+    guestQuantityInput.setCustomValidity('');
+  }
+
+  if (roomQuantityInput.value === '3' && guestQuantityInput.value === '0') {
+    guestQuantityInput.setCustomValidity('Только три спальных места!');
+  } else if (
+    (roomQuantityInput.value === '3' && guestQuantityInput.value === '3') ||
+    (roomQuantityInput.value === '3' && guestQuantityInput.value === '2') ||
+    (roomQuantityInput.value === '3' && guestQuantityInput.value === '1')
+  ) {
+    guestQuantityInput.setCustomValidity('');
+  }
+
+  if (
+    (roomQuantityInput.value === '100' && guestQuantityInput.value === '3') ||
+    (roomQuantityInput.value === '100' && guestQuantityInput.value === '2') ||
+    (roomQuantityInput.value === '100' && guestQuantityInput.value === '1')
+  ) {
+    guestQuantityInput.setCustomValidity('Нежилое помещение');
+  } else if (
+    roomQuantityInput.value === '100' &&
+    guestQuantityInput.value === '0'
+  ) {
+    guestQuantityInput.setCustomValidity('');
   }
 });
