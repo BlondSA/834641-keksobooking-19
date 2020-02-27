@@ -43,7 +43,7 @@ var TypesHouse = {
   bungalo: 'Бунгало'
 };
 var ENTER_BUTTON = 13;
-// var ESC_BUTTON = 27;
+var ESC_BUTTON = 27;
 var MOUSE_LEFT_BTN = 0;
 var MIN_TITLE_LENGTH = 30;
 var MAX_TITLE_LENGTH = 100;
@@ -209,10 +209,11 @@ var renderCard = function (element) {
   return cardElement;
 };
 
-var cardCreate = function () {
-  var card = renderCard(pinsData[0]);
-  var mapFiltersContainer = map.querySelector('.map__filters-container');
-  map.insertBefore(card, mapFiltersContainer); // Добавялем карточку для первого пина
+// Функция для генерации карточки и вставки его до элемента с классом map__filters-container
+var cardCreate = function (y) {
+  var card = renderCard(pinsData[y]);
+  var mapFiltersContainer = MAP.querySelector('.map__filters-container');
+  MAP.insertBefore(card, mapFiltersContainer);
 };
 
 // module4-task2
@@ -221,8 +222,8 @@ var cardCreate = function () {
 var formHeader = document.querySelector('.ad-form-header');
 formHeader.setAttribute('disabled', 'disabled');
 var formElement = document.querySelectorAll('.ad-form__element');
-for (var i = 0; i < formElement.length; i++) {
-  var formItem = formElement[i];
+for (var k = 0; k < formElement.length; k++) {
+  var formItem = formElement[k];
   formItem.setAttribute('disabled', 'disabled');
 }
 
@@ -231,7 +232,6 @@ var activeForm = function () {
   map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
   document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
   renderPins(); // Функция создания 8 случайных пинов
-  cardCreate(); // Функция создания карточки дл первого пина
   formHeader.removeAttribute('disabled', 'disabled');
   formElement = document.querySelectorAll('.ad-form__element');
   addressPin.value = coordinateMainPinActive();
@@ -279,43 +279,8 @@ addressPin.value = coordinateMainPinInactive();
 
 // Валидация формы ввода
 
-// // Валидация заголовка жилья
-var addForm = document.querySelector('.ad-form');
-var formTitleInput = addForm.querySelector('#title');
-
-formTitleInput.addEventListener('invalid', function () {
-  if (formTitleInput.validity.tooShort) {
-    formTitleInput.setCustomValidity(
-        'Заголовок не должен быть меньше ' + MIN_TITLE_LENGTH + '-ти символов'
-    );
-  } else if (formTitleInput.validity.tooLong) {
-    formTitleInput.setCustomValidity(
-        'Заголовок не должен быть больше' + MAX_TITLE_LENGTH + 'символов'
-    );
-  } else if (formTitleInput.validity.valueMissing) {
-    formTitleInput.setCustomValidity('Обязательное поле');
-  } else {
-    formTitleInput.setCustomValidity('');
-  }
-});
-
-formTitleInput.addEventListener('input', function () {
-  if (formTitleInput.value.length < MIN_TITLE_LENGTH) {
-    formTitleInput.setCustomValidity(
-        'Заголовок должен состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов'
-    );
-  } else if (formTitleInput.value.length > MAX_TITLE_LENGTH) {
-    formTitleInput.setCustomValidity(
-        'Заголовок должен состоять не больше чем из ' +
-        MAX_TITLE_LENGTH +
-        ' символов'
-    );
-  } else {
-    formTitleInput.setCustomValidity('');
-  }
-});
-
 // Валидация кол-ва человек в зависимости от кол-ва комнат
+var addForm = document.querySelector('.ad-form');
 var roomQuantityInput = addForm.querySelector('#room_number');
 var guestQuantityInput = addForm.querySelector('#capacity');
 
@@ -366,5 +331,116 @@ addForm.addEventListener('change', function () {
     guestQuantityInput.value === '0'
   ) {
     guestQuantityInput.setCustomValidity('');
+  }
+});
+
+// Валидация заголовка жилья
+var formTitleInput = addForm.querySelector('#title');
+
+formTitleInput.addEventListener('invalid', function () {
+  if (formTitleInput.validity.tooShort) {
+    formTitleInput.setCustomValidity(
+        'Заголовок не должен быть меньше ' + MIN_TITLE_LENGTH + '-ти символов'
+    );
+  } else if (formTitleInput.validity.tooLong) {
+    formTitleInput.setCustomValidity(
+        'Заголовок не должен быть больше' + MAX_TITLE_LENGTH + 'символов'
+    );
+  } else if (formTitleInput.validity.valueMissing) {
+    formTitleInput.setCustomValidity('Обязательное поле');
+  } else {
+    formTitleInput.setCustomValidity('');
+  }
+});
+
+formTitleInput.addEventListener('input', function () {
+  if (formTitleInput.value.length < MIN_TITLE_LENGTH) {
+    formTitleInput.setCustomValidity(
+        'Заголовок должен состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов'
+    );
+  } else if (formTitleInput.value.length > MAX_TITLE_LENGTH) {
+    formTitleInput.setCustomValidity(
+        'Заголовок должен состоять не больше чем из ' +
+        MAX_TITLE_LENGTH +
+        ' символов'
+    );
+  } else {
+    formTitleInput.setCustomValidity('');
+  }
+});
+
+// Валидация времени въезда и времени выезда
+var timeInInput = addForm.querySelector('#timein');
+var timeOutInput = addForm.querySelector('#timeout');
+
+addForm.addEventListener('change', function () {
+  if (parseInt(timeInInput.value, 10) !== parseInt(timeOutInput.value, 10)) {
+    timeOutInput.setCustomValidity(
+        'Время заселения должно совпадать с временем выезда'
+    );
+  } else {
+    timeOutInput.setCustomValidity('');
+  }
+});
+
+// Валидация типа жилья и цены
+var typeHousing = document.querySelector('#type');
+var costHousing = document.querySelector('#price');
+var selectChangeHandler = function () {
+  if (typeHousing.value === 'bungalo') {
+    costHousing.setAttribute('min', '0');
+    costHousing.setAttribute('placeholder', '0');
+  } else if (typeHousing.value === 'flat') {
+    costHousing.setAttribute('min', '1000');
+    costHousing.setAttribute('placeholder', '1000');
+    if (costHousing.value < 1000) {
+      costHousing.setCustomValidity('Минимальная цена за квартиру 1000');
+    }
+  } else if (typeHousing.value === 'house') {
+    costHousing.setAttribute('min', '5000');
+    costHousing.setAttribute('placeholder', '5000');
+    if (costHousing.value < 5000) {
+      costHousing.setCustomValidity('Минимальная цена за дом 5000');
+    }
+  } else if (typeHousing.value === 'palace') {
+    costHousing.setAttribute('min', '10000');
+    costHousing.setAttribute('placeholder', '10000');
+    if (costHousing.value < 10000) {
+      costHousing.setCustomValidity('Минимальная цена за дворец 10000');
+    }
+  }
+};
+typeHousing.addEventListener('change', selectChangeHandler);
+costHousing.addEventListener('change', selectChangeHandler);
+
+// Обрабочик клика на пин для добавления его на карту
+
+var popupOpenCards = document.querySelectorAll('.map-pin');
+
+var addCardClickHandler = function (popupOpenCard) {
+  popupOpenCard.addEventListener('click', function () {
+    cardCreate(y);
+  });
+};
+
+for (var y = 1; y < popupOpenCards.length; y++) {
+  addCardClickHandler(popupOpenCards[y]);
+}
+
+// Обработчик клика на кнопку закрыть popup
+
+var popupCloseCards = document.querySelector('.popup__close');
+var removeMapCard = function () {
+  var mapCard = document.querySelector('.map__card');
+  mapCard.remove();
+};
+
+popupCloseCards.addEventListener('click', function () {
+  removeMapCard();
+});
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_BUTTON) {
+    removeMapCard();
   }
 });
