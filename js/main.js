@@ -34,7 +34,6 @@ var PIN_MAIN_SHIFT_X = PIN_MAIN_WIDTH / 2; // Смещение круглого 
 var PIN_MAIN_SHIFT_Y = PIN_MAIN_HEIGHT / 2; // Смещение круглого главного пина по оси Y до центра метки
 var PIN_MAIN_POINT_SHIFT_Y = 20; // (высота острия метки) Смещение по оси Y до точки острого конца метки
 var RADIX = 10;
-var MAP = document.querySelector('.map');
 var setPinElement = document.querySelector('.map__pins');
 var TypesHouse = {
   palace: 'Дворец',
@@ -45,8 +44,6 @@ var TypesHouse = {
 var ENTER_BUTTON = 13;
 var ESC_BUTTON = 27;
 var MOUSE_LEFT_BTN = 0;
-var MIN_TITLE_LENGTH = 30;
-var MAX_TITLE_LENGTH = 100;
 
 // Функция возвращающая случайное число от min до max (Максимум и минимум включаются)
 var getRandomIntInclusive = function (min, max) {
@@ -82,7 +79,7 @@ var getElementWidth = function (element) {
 var createUserData = function () {
   var pinData = [];
   var location = {
-    x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(MAP)),
+    x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(map)),
     y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
   };
   for (var i = 0; i < NUMBER_PINS; i++) {
@@ -92,7 +89,7 @@ var createUserData = function () {
       },
 
       location: {
-        x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(MAP)),
+        x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(map)),
         y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
       },
 
@@ -134,11 +131,40 @@ var renderPin = function (element) {
 
 var pinsData = createUserData();
 
+// Цикл создания пинов на карте
 var renderPins = function () {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < pinsData.length; i++) {
-    fragment.appendChild(renderPin(pinsData[i]));
+    var currentPin = renderPin(pinsData[i]);
+
+    (function () {
+      var pinData = pinsData[i];
+      // Обработчик клика на Pin
+      currentPin.addEventListener('click', function () {
+        if (mapCard) {
+          removeMapCard();
+          cardCreate(pinData);
+        } else {
+          cardCreate(pinData);
+        }
+        var mapCard = document.querySelector('.map__card');
+        var removeMapCard = function () {
+          mapCard.remove();
+        };
+        var popupCloseButton = document.querySelector('.popup__close');
+        popupCloseButton.addEventListener('click', function () {
+          removeMapCard();
+        });
+        document.addEventListener('keydown', function (evt) {
+          if (evt.keyCode === ESC_BUTTON) {
+            removeMapCard();
+          }
+        });
+      });
+    })();
+
+    fragment.appendChild(currentPin);
   }
 
   setPinElement.appendChild(fragment);
@@ -209,11 +235,11 @@ var renderCard = function (element) {
   return cardElement;
 };
 
-// Функция для генерации карточки и вставки его до элемента с классом map__filters-container
-var cardCreate = function (y) {
-  var card = renderCard(pinsData[y]);
-  var mapFiltersContainer = MAP.querySelector('.map__filters-container');
-  MAP.insertBefore(card, mapFiltersContainer);
+// Функция вызова и вставки сгенерированной карточки до элемента с классом map__filters-container
+var cardCreate = function (pinData) {
+  var card = renderCard(pinData);
+  var mapFiltersContainer = map.querySelector('.map__filters-container');
+  map.insertBefore(card, mapFiltersContainer);
 };
 
 // module4-task2
@@ -334,41 +360,6 @@ addForm.addEventListener('change', function () {
   }
 });
 
-// Валидация заголовка жилья
-var formTitleInput = addForm.querySelector('#title');
-
-formTitleInput.addEventListener('invalid', function () {
-  if (formTitleInput.validity.tooShort) {
-    formTitleInput.setCustomValidity(
-        'Заголовок не должен быть меньше ' + MIN_TITLE_LENGTH + '-ти символов'
-    );
-  } else if (formTitleInput.validity.tooLong) {
-    formTitleInput.setCustomValidity(
-        'Заголовок не должен быть больше' + MAX_TITLE_LENGTH + 'символов'
-    );
-  } else if (formTitleInput.validity.valueMissing) {
-    formTitleInput.setCustomValidity('Обязательное поле');
-  } else {
-    formTitleInput.setCustomValidity('');
-  }
-});
-
-formTitleInput.addEventListener('input', function () {
-  if (formTitleInput.value.length < MIN_TITLE_LENGTH) {
-    formTitleInput.setCustomValidity(
-        'Заголовок должен состоять минимум из ' + MIN_TITLE_LENGTH + '-х символов'
-    );
-  } else if (formTitleInput.value.length > MAX_TITLE_LENGTH) {
-    formTitleInput.setCustomValidity(
-        'Заголовок должен состоять не больше чем из ' +
-        MAX_TITLE_LENGTH +
-        ' символов'
-    );
-  } else {
-    formTitleInput.setCustomValidity('');
-  }
-});
-
 // Валидация времени въезда и времени выезда
 var timeInInput = addForm.querySelector('#timein');
 var timeOutInput = addForm.querySelector('#timeout');
@@ -413,34 +404,14 @@ var selectChangeHandler = function () {
 typeHousing.addEventListener('change', selectChangeHandler);
 costHousing.addEventListener('change', selectChangeHandler);
 
-// Обрабочик клика на пин для добавления его на карту
-
-var popupOpenCards = document.querySelectorAll('.map-pin');
-
-var addCardClickHandler = function (popupOpenCard) {
-  popupOpenCard.addEventListener('click', function () {
-    cardCreate(y);
-  });
-};
-
-for (var y = 1; y < popupOpenCards.length; y++) {
-  addCardClickHandler(popupOpenCards[y]);
-}
-
 // Обработчик клика на кнопку закрыть popup
+// var mapCard = document.querySelector('.map__card');
+// var removeMapCard = function () {
+//   mapCard.remove();
+// };
+// var popupCloseButton = document.querySelector('.popup__close');
+// popupCloseButton.addEventListener('click', function () {
+//   removeMapCard();
+// });
 
-var popupCloseCards = document.querySelector('.popup__close');
-var removeMapCard = function () {
-  var mapCard = document.querySelector('.map__card');
-  mapCard.remove();
-};
 
-popupCloseCards.addEventListener('click', function () {
-  removeMapCard();
-});
-
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC_BUTTON) {
-    removeMapCard();
-  }
-});
