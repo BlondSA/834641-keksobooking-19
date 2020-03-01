@@ -142,9 +142,11 @@ var renderPins = function () {
       // Функция добавляющая Карточку пина, добавляющая обработчик клика на кнопку заркрыть и кнопки ESC
       var createPopup = function () {
         cardCreate(pinData);
-        document.querySelector('.popup__close').addEventListener('click', function () {
-          removeMapCard();
-        });
+        document
+          .querySelector('.popup__close')
+          .addEventListener('click', function () {
+            removeMapCard();
+          });
         document.addEventListener('keydown', function (evt) {
           if (evt.keyCode === ESC_BUTTON) {
             removeMapCard();
@@ -153,9 +155,11 @@ var renderPins = function () {
       };
       // Функция удаляющая обработчик клика на кнопку заркрыть и кнопки ESC, удаляющая карточку для Пина
       var removeMapCard = function () {
-        document.querySelector('.popup__close').removeEventListener('click', function () {
-          removeMapCard();
-        });
+        document
+          .querySelector('.popup__close')
+          .removeEventListener('click', function () {
+            removeMapCard();
+          });
         document.removeEventListener('keydown', function (evt) {
           if (evt.keyCode === ESC_BUTTON) {
             removeMapCard();
@@ -400,18 +404,24 @@ var selectChangeHandler = function () {
     costHousing.setAttribute('placeholder', '1000');
     if (costHousing.value < 1000) {
       costHousing.setCustomValidity('Минимальная цена за квартиру 1000');
+    } else {
+      costHousing.setCustomValidity('');
     }
   } else if (typeHousing.value === 'house') {
     costHousing.setAttribute('min', '5000');
     costHousing.setAttribute('placeholder', '5000');
     if (costHousing.value < 5000) {
       costHousing.setCustomValidity('Минимальная цена за дом 5000');
+    } else {
+      costHousing.setCustomValidity('');
     }
   } else if (typeHousing.value === 'palace') {
     costHousing.setAttribute('min', '10000');
     costHousing.setAttribute('placeholder', '10000');
     if (costHousing.value < 10000) {
       costHousing.setCustomValidity('Минимальная цена за дворец 10000');
+    } else {
+      costHousing.setCustomValidity('');
     }
   }
 };
