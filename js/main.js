@@ -137,23 +137,12 @@ var renderPins = function () {
 
   for (var i = 0; i < pinsData.length; i++) {
     var currentPin = renderPin(pinsData[i]);
-
     (function () {
       var pinData = pinsData[i];
-      // Обработчик клика на Pin
-      currentPin.addEventListener('click', function () {
-        var mapCard = document.querySelector('.map__card');
-        var removeMapCard = function () {
-          mapCard.remove();
-        };
-        if (mapCard) {
-          removeMapCard();
-          cardCreate(pinData);
-        } else {
-          cardCreate(pinData);
-        }
-        var popupCloseButton = document.querySelector('.popup__close');
-        popupCloseButton.addEventListener('click', function () {
+      // Функция добавляющая Карточку пина, добавляющая обработчик клика на кнопку заркрыть и кнопки ESC
+      var createPopup = function () {
+        cardCreate(pinData);
+        document.querySelector('.popup__close').addEventListener('click', function () {
           removeMapCard();
         });
         document.addEventListener('keydown', function (evt) {
@@ -161,10 +150,37 @@ var renderPins = function () {
             removeMapCard();
           }
         });
+      };
+      // Функция удаляющая обработчик клика на кнопку заркрыть и кнопки ESC, удаляющая карточку для Пина
+      var removeMapCard = function () {
+        document.querySelector('.popup__close').removeEventListener('click', function () {
+          removeMapCard();
+        });
+        document.removeEventListener('keydown', function (evt) {
+          if (evt.keyCode === ESC_BUTTON) {
+            removeMapCard();
+          }
+        });
+        document.querySelector('.map__card').remove();
+      };
+      // Обработчик клика на Pin
+      currentPin.addEventListener('click', function () {
+        var mapCard = document.querySelector('.map__card');
+        // Добавяляем условие сравнения, есть ли у нас элемент с классом .map__card
+        // Если он уже существует, то мы должны его удалить, а затем создать новый
+        // В противном случае мы его просто создаем
+        if (mapCard) {
+          removeMapCard(); // Удаляем старую карточку
+          createPopup(); // Добавляем новую карточку
+        } else {
+          createPopup(); // Добавляем новую карточку
+        }
       });
     })();
+
     fragment.appendChild(currentPin);
   }
+
   setPinElement.appendChild(fragment);
 };
 
@@ -401,15 +417,3 @@ var selectChangeHandler = function () {
 };
 typeHousing.addEventListener('change', selectChangeHandler);
 costHousing.addEventListener('change', selectChangeHandler);
-
-// Обработчик клика на кнопку закрыть popup
-// var mapCard = document.querySelector('.map__card');
-// var removeMapCard = function () {
-//   mapCard.remove();
-// };
-// var popupCloseButton = document.querySelector('.popup__close');
-// popupCloseButton.addEventListener('click', function () {
-//   removeMapCard();
-// });
-
-
