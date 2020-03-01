@@ -142,16 +142,16 @@ var renderPins = function () {
       var pinData = pinsData[i];
       // Обработчик клика на Pin
       currentPin.addEventListener('click', function () {
+        var mapCard = document.querySelector('.map__card');
+        var removeMapCard = function () {
+          mapCard.remove();
+        };
         if (mapCard) {
           removeMapCard();
           cardCreate(pinData);
         } else {
           cardCreate(pinData);
         }
-        var mapCard = document.querySelector('.map__card');
-        var removeMapCard = function () {
-          mapCard.remove();
-        };
         var popupCloseButton = document.querySelector('.popup__close');
         popupCloseButton.addEventListener('click', function () {
           removeMapCard();
@@ -163,10 +163,8 @@ var renderPins = function () {
         });
       });
     })();
-
     fragment.appendChild(currentPin);
   }
-
   setPinElement.appendChild(fragment);
 };
 
