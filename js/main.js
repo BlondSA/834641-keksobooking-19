@@ -130,11 +130,23 @@ var renderPin = function (element) {
 };
 
 var pinsData = createUserData();
+// Функция удаляющая обработчик клика на кнопку заркрыть и кнопки ESC, удаляющая карточку для Пина
+var removeMapCard = function () {
+  document
+    .querySelector('.popup__close')
+    .removeEventListener('click', closePopupHandler);
+  document.removeEventListener('keydown', closePopupHandler);
+  document.querySelector('.map__card').remove();
+};
+var closePopupHandler = function (evt) {
+  if (evt.keyCode === ESC_BUTTON) {
+    removeMapCard();
+  }
+};
 
 // Цикл создания пинов на карте
 var renderPins = function () {
   var fragment = document.createDocumentFragment();
-
   for (var i = 0; i < pinsData.length; i++) {
     var currentPin = renderPin(pinsData[i]);
     (function () {
@@ -147,25 +159,7 @@ var renderPins = function () {
           .addEventListener('click', function () {
             removeMapCard();
           });
-        document.addEventListener('keydown', function (evt) {
-          if (evt.keyCode === ESC_BUTTON) {
-            removeMapCard();
-          }
-        });
-      };
-      // Функция удаляющая обработчик клика на кнопку заркрыть и кнопки ESC, удаляющая карточку для Пина
-      var removeMapCard = function () {
-        document
-          .querySelector('.popup__close')
-          .removeEventListener('click', function () {
-            removeMapCard();
-          });
-        document.removeEventListener('keydown', function (evt) {
-          if (evt.keyCode === ESC_BUTTON) {
-            removeMapCard();
-          }
-        });
-        document.querySelector('.map__card').remove();
+        document.addEventListener('keydown', closePopupHandler);
       };
       // Обработчик клика на Pin
       currentPin.addEventListener('click', function () {
@@ -177,14 +171,12 @@ var renderPins = function () {
           removeMapCard(); // Удаляем старую карточку
           createPopup(); // Добавляем новую карточку
         } else {
-          createPopup(); // Добавляем новую карточку
+          createPopup(); // Добавляем новую карточку}
         }
       });
     })();
-
     fragment.appendChild(currentPin);
   }
-
   setPinElement.appendChild(fragment);
 };
 
@@ -285,20 +277,29 @@ var activeForm = function () {
   }
 };
 
-// Выполнение сценария по нажатию на левую клавишу мыши
+// Функция активации карты с пинами по нажатии кнопки Enter
 var pinMain = document.querySelector('.map__pin--main');
-pinMain.addEventListener('mousedown', function (evt) {
+var activePinsMap = function () {
+  activeForm();
+  pinMain.removeEventListener('mousedown', enabledPinsList);
+  pinMain.removeEventListener('keydown', enabledPinsListKeydown);
+};
+var enabledPinsList = function (evt) {
   if (evt.button === MOUSE_LEFT_BTN) {
-    activeForm();
+    activePinsMap();
   }
-});
-
-// Выполнение сценария по нажатию на Enter
-pinMain.addEventListener('keydown', function (evt) {
+};
+// Функция активации карты с пинами по нажатии кнопки Enter
+var enabledPinsListKeydown = function (evt) {
   if (evt.keyCode === ENTER_BUTTON) {
-    activeForm();
+    activePinsMap();
   }
-});
+};
+
+// Сенарии
+pinMain.addEventListener('mousedown', enabledPinsList);
+pinMain.addEventListener('keydown', enabledPinsListKeydown);
+
 
 // Функция указания адреса главной круглой метки в неактивном состоянии (центр круглой метки)
 var coordinateMainPinInactive = function () {
