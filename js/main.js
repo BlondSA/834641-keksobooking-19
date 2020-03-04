@@ -78,19 +78,15 @@ var getElementWidth = function (element) {
 // Создание массива с данными пользователя
 var createUserData = function () {
   var pinData = [];
-  var location = {
-    x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(map)),
-    y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
-  };
   for (var i = 0; i < NUMBER_PINS; i++) {
     pinData.push({
       author: {
-        avatar: 'img/avatars/user0' + (i + 1) + '.png'
+        avatar: 'img/avatars/user0' + (i + 1) + '.png',
       },
 
       location: {
         x: getRandomIntInclusive(MAP_PIN_MIN_X, getElementWidth(map)),
-        y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
+        y: getRandomIntInclusive(MAP_PIN_MIN_Y, MAP_PIN_MAX_Y),
       },
 
       offer: {
@@ -143,6 +139,8 @@ var closePopupHandler = function (evt) {
     removeMapCard();
   }
 };
+
+//
 
 // Цикл создания пинов на карте
 var renderPins = function () {
@@ -223,7 +221,7 @@ var renderCard = function (element) {
   cardElement.querySelector('.popup__avatar').src = element.author.avatar;
   cardElement.querySelector('.popup__title').textContent = element.offer.title;
   cardElement.querySelector('.popup__text--address').textContent =
-    element.offer.address;
+  element.location.x - MAP_SHIFT_PIN_X + ', ' + element.location.y;
   cardElement.querySelector('.popup__text--price').textContent =
     element.offer.price + '₽/ночь';
   cardElement.querySelector('.popup__type').textContent =
@@ -299,6 +297,9 @@ var enabledPinsListKeydown = function (evt) {
 // Сенарии
 pinMain.addEventListener('mousedown', enabledPinsList);
 pinMain.addEventListener('keydown', enabledPinsListKeydown);
+
+
+// Form.js
 
 
 // Функция указания адреса главной круглой метки в неактивном состоянии (центр круглой метки)
