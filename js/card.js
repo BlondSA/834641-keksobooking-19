@@ -1,10 +1,17 @@
 'use strict';
 (function () {
-  // module3-task3
-
+  var TypesHouse = {
+    palace: 'Дворец',
+    flat: 'Квартира',
+    house: 'Дом',
+    bungalo: 'Бунгало'
+  };
+  var map = document.querySelector('.map');
   var cardTemplate = document
     .querySelector('#card')
     .content.querySelector('.map__card');
+
+  // module3-task3
 
   var createNewPhotos = function (photos, photosContainer) {
     if (photos.length === 0) {
@@ -47,7 +54,7 @@
     cardElement.querySelector('.popup__text--price').textContent =
       element.offer.price + '₽/ночь';
     cardElement.querySelector('.popup__type').textContent =
-    window.utils.TypesHouse[element.offer.type];
+    TypesHouse[element.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent =
       element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей.';
     cardElement.querySelector('.popup__description').textContent =
@@ -68,8 +75,8 @@
   // Функция вызова и вставки сгенерированной карточки до элемента с классом map__filters-container
   var cardCreate = function (pinData) {
     var card = renderCard(pinData);
-    var mapFiltersContainer = window.utils.map.querySelector('.map__filters-container');
-    window.utils.map.insertBefore(card, mapFiltersContainer);
+    var mapFiltersContainer = map.querySelector('.map__filters-container');
+    map.insertBefore(card, mapFiltersContainer);
   };
   window.card = {
     cardCreate: cardCreate,

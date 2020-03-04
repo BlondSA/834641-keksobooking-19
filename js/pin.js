@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var setPinElement = document.querySelector('.map__pins');
   // Функция удаляющая обработчик клика на кнопку заркрыть и кнопки ESC, удаляющая карточку для Пина
   var removeMapCard = function () {
     document
@@ -39,15 +40,13 @@
           // В противном случае мы его просто создаем
           if (mapCard) {
             removeMapCard(); // Удаляем старую карточку
-            createPopup(); // Добавляем новую карточку
-          } else {
-            createPopup(); // Добавляем новую карточку}
           }
+          createPopup(); // Добавляем новую карточку}
         });
       })();
       fragment.appendChild(currentPin);
     }
-    window.utils.setPinElement.appendChild(fragment);
+    setPinElement.appendChild(fragment);
   };
   window.pin = {
     renderPins: renderPins,
