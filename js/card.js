@@ -1,10 +1,10 @@
 'use strict';
 (function () {
   var TypesHouse = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
   var map = document.querySelector('.map');
   var cardTemplate = document

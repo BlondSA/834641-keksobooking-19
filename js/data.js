@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   // Создание массива с данными пользователя
-  var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+  var TYPES = ['PALACE', 'FLAT', 'HOUSE', 'BUNGALO'];
   var CHECKS = ['12:00', '13:00', '14:00']; // Массив один для заселения и выезда один, т.к. время въезда = время выезда и наоборот
   var FEATURES = [
     'wifi',
