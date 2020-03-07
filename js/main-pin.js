@@ -11,7 +11,7 @@
   var PIN_MAIN_POINT_SHIFT_Y = 20; // (высота острия метки) Смещение по оси Y до точки острого конца метки
 
   var pinMain = document.querySelector('.map__pin--main');
-  pinMain.addEventListener('mousedown', function (evt) {
+  var mainPinMouseHandler = function (evt) {
     evt.preventDefault();
     var startCoords = {
       x: evt.clientX,
@@ -80,5 +80,6 @@
     };
     document.addEventListener('mousemove', mainPinMouseMoveHandler);
     document.addEventListener('mouseup', mainPinMouseUpHandler);
-  });
+  };
+  pinMain.addEventListener('mousedown', mainPinMouseHandler);
 })();
