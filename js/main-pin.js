@@ -9,8 +9,39 @@
   var RADIX = 10;
   var PIN_MAIN_HEIGHT = 62; // Высота главной метки
   var PIN_MAIN_POINT_SHIFT_Y = 20; // (высота острия метки) Смещение по оси Y до точки острого конца метки
-
   var pinMain = document.querySelector('.map__pin--main');
+  // Функция нахождения координаты по оси Y
+  var getCoordsY = function (shift) {
+    var coordY = 0;
+    var offsetStartPositionY = pinMain.offsetTop - shift.y;
+    if (offsetStartPositionY > MAP_PIN_MAX_Y) {
+      coordY = MAP_PIN_MAX_Y;
+    } else if (
+      offsetStartPositionY <
+            MAP_PIN_MIN_Y
+    ) {
+      coordY = MAP_PIN_MIN_Y;
+    } else {
+      coordY = offsetStartPositionY;
+    }
+    return coordY;
+  };
+  // Функция нахождения координаты по оси X
+  var getCoordsX = function (shift) {
+    var coordX = 0;
+    var offsetStartPositionX = pinMain.offsetLeft - shift.x;
+    if (
+      offsetStartPositionX >
+            MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X
+    ) {
+      coordX = MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X;
+    } else if (offsetStartPositionX < MAP_PIN_MIN_X - PIN_MAIN_SHIFT_X) {
+      coordX = MAP_PIN_MIN_X - PIN_MAIN_SHIFT_X;
+    } else {
+      coordX = offsetStartPositionX;
+    }
+    return coordX;
+  };
   var mainPinMouseHandler = function (evt) {
     evt.preventDefault();
     var startCoords = {
@@ -27,40 +58,8 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      // Функция нахождения координаты по оси Y
-      var getCoordsY = function () {
-        var coordY = 0;
-        var offsetStartPositionY = pinMain.offsetTop - shift.y;
-        if (offsetStartPositionY > MAP_PIN_MAX_Y) {
-          coordY = MAP_PIN_MAX_Y;
-        } else if (
-          offsetStartPositionY <
-          MAP_PIN_MIN_Y
-        ) {
-          coordY = MAP_PIN_MIN_Y;
-        } else {
-          coordY = offsetStartPositionY;
-        }
-        return coordY;
-      };
-      // Функция нахождения координаты по оси X
-      var getCoordsX = function () {
-        var coordX = 0;
-        var offsetStartPositionX = pinMain.offsetLeft - shift.x;
-        if (
-          offsetStartPositionX >
-          MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X
-        ) {
-          coordX = MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X;
-        } else if (offsetStartPositionX < MAP_PIN_MIN_X - PIN_MAIN_SHIFT_X) {
-          coordX = MAP_PIN_MIN_X - PIN_MAIN_SHIFT_X;
-        } else {
-          coordX = offsetStartPositionX;
-        }
-        return coordX;
-      };
-      pinMain.style.top = getCoordsY() + 'px';
-      pinMain.style.left = getCoordsX() + 'px';
+      pinMain.style.top = getCoordsY(shift) + 'px';
+      pinMain.style.left = getCoordsX(shift) + 'px';
       // Функция указания адреса главной метки в активном состоянии (острая часть пина)
       var coordinateMainPinActive = function () {
         var pinMainX =
