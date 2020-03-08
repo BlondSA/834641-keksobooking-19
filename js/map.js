@@ -60,14 +60,12 @@
 
   // Функция указания адреса главной круглой метки в неактивном состоянии (центр круглой метки)
   var coordinateMainPinInactive = function () {
-    var pinMainX =
-      Number(parseInt(pinMain.style.left, RADIX)) + PIN_MAIN_SHIFT_X;
-    var pinMainY =
-      Number(parseInt(pinMain.style.top, RADIX)) + PIN_MAIN_SHIFT_Y;
+    var pinMainX = parseInt(pinMain.style.left, RADIX) + PIN_MAIN_SHIFT_X;
+    var pinMainY = parseInt(pinMain.style.top, RADIX) + PIN_MAIN_SHIFT_Y;
     return pinMainX + ', ' + pinMainY;
   };
 
-  // Функция указания адреса главной круглой метки в неактивном состоянии (центр круглой метки)
+  // Функция указания адреса главной метки в активном состоянии острая часть пина
   var coordinateMainPinActive = function () {
     var pinMainX = parseInt(pinMain.style.left, RADIX) + PIN_MAIN_SHIFT_X;
     var pinMainY = parseInt(pinMain.style.top, RADIX) +
