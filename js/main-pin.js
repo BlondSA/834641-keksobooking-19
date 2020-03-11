@@ -16,10 +16,7 @@
     var offsetStartPositionY = pinMain.offsetTop - shift.y;
     if (offsetStartPositionY > MAP_PIN_MAX_Y) {
       coordY = MAP_PIN_MAX_Y;
-    } else if (
-      offsetStartPositionY <
-            MAP_PIN_MIN_Y
-    ) {
+    } else if (offsetStartPositionY < MAP_PIN_MIN_Y) {
       coordY = MAP_PIN_MIN_Y;
     } else {
       coordY = offsetStartPositionY;
@@ -30,10 +27,7 @@
   var getCoordsX = function (shift) {
     var coordX = 0;
     var offsetStartPositionX = pinMain.offsetLeft - shift.x;
-    if (
-      offsetStartPositionX >
-            MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X
-    ) {
+    if (offsetStartPositionX > MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X) {
       coordX = MAP_PIN_MAX_X - PIN_MAIN_SHIFT_X;
     } else if (offsetStartPositionX < MAP_PIN_MIN_X - PIN_MAIN_SHIFT_X) {
       coordX = MAP_PIN_MIN_X - PIN_MAIN_SHIFT_X;
@@ -41,6 +35,15 @@
       coordX = offsetStartPositionX;
     }
     return coordX;
+  };
+  // Функция указания адреса главной метки в активном состоянии (острая часть пина)
+  var coordinateMainPinActive = function () {
+    var pinMainX = parseInt(pinMain.style.left, RADIX) + PIN_MAIN_SHIFT_X;
+    var pinMainY =
+      parseInt(pinMain.style.top, RADIX) +
+      PIN_MAIN_HEIGHT +
+      PIN_MAIN_POINT_SHIFT_Y;
+    return pinMainX + ', ' + pinMainY;
   };
   var mainPinMouseHandler = function (evt) {
     evt.preventDefault();
@@ -60,14 +63,6 @@
       };
       pinMain.style.top = getCoordsY(shift) + 'px';
       pinMain.style.left = getCoordsX(shift) + 'px';
-      // Функция указания адреса главной метки в активном состоянии (острая часть пина)
-      var coordinateMainPinActive = function () {
-        var pinMainX =
-          parseInt(pinMain.style.left, RADIX) + PIN_MAIN_SHIFT_X;
-        var pinMainY =
-          parseInt(pinMain.style.top, RADIX) + PIN_MAIN_HEIGHT + PIN_MAIN_POINT_SHIFT_Y;
-        return pinMainX + ', ' + pinMainY;
-      };
       // Заполнение адрессной строки по умолчанию (в активном состоянии, при перетаскивании метки)
       var addressPin = document.querySelector('#address');
       addressPin.value = coordinateMainPinActive();

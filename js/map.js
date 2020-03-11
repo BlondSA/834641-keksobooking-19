@@ -25,7 +25,7 @@
   var activeForm = function () {
     map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
     document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
-    window.pin.renderPins(); // Функция создания 8 случайных пинов
+    // window.pin.renderPins(); // Функция создания 8 случайных пинов
     formHeader.removeAttribute('disabled', 'disabled');
     formElement = document.querySelectorAll('.ad-form__element');
     addressPin.value = coordinateMainPinActive();

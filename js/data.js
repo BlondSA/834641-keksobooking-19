@@ -31,10 +31,10 @@
 
   var createUserData = function () {
     var pinData = [];
-    var location = {
-      x: window.utils.getRandomIntInclusive(MAP_PIN_MIN_X, window.utils.getElementWidth(map)),
-      y: window.utils.getRandomIntInclusive(window.utils.MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
-    };
+    // var location = {
+    //   x: window.utils.getRandomIntInclusive(MAP_PIN_MIN_X, window.utils.getElementWidth(map)),
+    //   y: window.utils.getRandomIntInclusive(window.utils.MAP_PIN_MIN_Y, MAP_PIN_MAX_Y)
+    // };
     for (var i = 0; i < NUMBER_PINS; i++) {
       pinData.push({
         author: {
