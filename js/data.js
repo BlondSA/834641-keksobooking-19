@@ -27,6 +27,7 @@
   var MAP_PIN_MAX_Y = 630;
   var MAP_PIN_MIN_X = 0;
   var map = document.querySelector('.map');
+  var setPinElement = document.querySelector('.map__pins');
 
 
   var createUserData = function () {
@@ -61,7 +62,6 @@
         }
       });
     }
-
     return pinData;
   };
 
@@ -74,8 +74,8 @@
   var renderPin = function (element) {
     var pinElement = pinTemplate.cloneNode(true);
 
-    pinElement.style.left = element.location.x - window.utils.MAP_SHIFT_PIN_X + 'px';
-    pinElement.style.top = element.location.y + 'px';
+    pinElement.style.left = element.location.x + (pinElement.offsetWidth / 2) + 'px';
+    pinElement.style.top = element.location.y - pinElement.offsetHeight + 'px';
     pinElement.querySelector('img').src = element.author.avatar;
     pinElement.querySelector('img').alt = element.offer.title;
 
@@ -83,6 +83,30 @@
   };
 
   var pinsData = createUserData();
+
+  // В случае успешного выполнения
+  var sendSuccesHandler = function (pinsData) {
+    var fragment = document.createDocumentFragment();
+    for (var j = 0; j < NUMBER_PINS; j++) {
+      fragment.appendChild(renderPin(pinsData[j]));
+    }
+    setPinElement.appendChild(fragment);
+  };
+
+  // В случае ошибки
+  var sendErrorHendler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  window.backend.load(sendSuccesHandler, sendErrorHendler);
 
   window.data = {
     renderPin: renderPin,
