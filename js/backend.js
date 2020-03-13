@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var load = function (sendSuccesHandler, sendErrorHendler) {
+  var load = function (sendSuccesHandler, sendErrorHandler) {
     var URL = 'https://js.dump.academy/keksobooking/data';
     var StatusCode = {
       OK: 200
@@ -14,14 +14,14 @@
       if (xhr.status === StatusCode.OK) {
         sendSuccesHandler(xhr.response);
       } else {
-        sendErrorHendler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        sendErrorHandler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
     xhr.addEventListener('error', function () {
-      sendErrorHendler('Произошла ошибка соединения');
+      sendErrorHandler('Произошла ошибка соединения');
     });
     xhr.addEventListener('timeout', function () {
-      sendErrorHendler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      sendErrorHandler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT_IN_MS;
