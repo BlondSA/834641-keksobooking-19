@@ -51,6 +51,7 @@
   };
 
   window.pin = {
+    removeMapCard: removeMapCard,
     renderPins: renderPins,
   };
 })();

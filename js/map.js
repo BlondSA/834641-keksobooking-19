@@ -21,11 +21,48 @@
   };
   deactivateForm();
 
+  // Очистка списка пинов
+  var clearPinsList = function () {
+    var pins = document.querySelector('.map__pins').querySelectorAll('.map__pin');
+    for (var i = 0; i < pins.length; i++) {
+      if (!pins[i].classList.contains('map__pin--main')) {
+        pins[i].remove();
+      }
+    }
+  };
+
+  var deactivationForm = function () {
+    map.classList.add('map--faded'); // Убираем класс-модификатор map--faded
+    document.querySelector('.ad-form').classList.add('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
+    formHeader.setAttribute('disabled', 'disabled');
+    clearPinsList();
+    formElement = document.querySelectorAll('.ad-form__element');
+    for (var j = 0; j < formElement.length; j++) {
+      var formItem = formElement[j];
+      formItem.setAttribute('disabled', 'disabled');
+    }
+    document.querySelector('.ad-form').reset();
+    pinMain.addEventListener('mousedown', pinsMouseHandler);
+    pinMain.addEventListener('keydown', pinsKeydownHandler);
+    var mapCard = document.querySelector('.map__card');
+    if (mapCard) {
+      window.pin.removeMapCard(); // Удаляем старую карточку
+    }
+    var addressPin = document.querySelector('#address');
+    document.querySelector('.map__pin--main').style.left = 601 + 'px';
+    document.querySelector('.map__pin--main').style.top = 406 + 'px';
+    var coordinateMainPinInactive = function () {
+      var pinMainX = 601;
+      var pinMainY = 406;
+      return pinMainX + ', ' + pinMainY;
+    };
+    addressPin.value = coordinateMainPinInactive();
+  };
+
   // Функция активации сценария
-  var activeForm = function () {
+  var activationForm = function () {
     map.classList.remove('map--faded'); // Убираем класс-модификатор map--faded
     document.querySelector('.ad-form').classList.remove('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
-    // window.pin.renderPins(); // Функция создания 8 случайных пинов
     window.backend.load(window.data.sendSuccesHandler, window.data.sendErrorHandler);
     formHeader.removeAttribute('disabled', 'disabled');
     formElement = document.querySelectorAll('.ad-form__element');
@@ -36,10 +73,12 @@
     }
   };
 
+
   // Функция активации карты с пинами по нажатии кнопки Enter
   var pinMain = document.querySelector('.map__pin--main');
   var activePinsMap = function () {
-    activeForm();
+
+    activationForm();
     pinMain.removeEventListener('mousedown', pinsMouseHandler);
     pinMain.removeEventListener('keydown', pinsKeydownHandler);
   };
@@ -77,4 +116,6 @@
   // Заполнение адрессной строки по умолчанию (в неактивном состоянии)
   var addressPin = document.querySelector('#address');
   addressPin.value = coordinateMainPinInactive();
+
+  window.map = {deactivationForm: deactivationForm};
 })();
