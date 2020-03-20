@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  var NUMBER_PINS = 8; // Кол-во вариантов жилья
   var setPinElement = document.querySelector('.map__pins');
   // Функция удаляющая обработчик клика на кнопку заркрыть и кнопки ESC, удаляющая карточку для Пина
   var removeMapCard = function () {
@@ -19,7 +18,7 @@
   // Цикл создания пинов на карте
   var renderPins = function (pinsData) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < NUMBER_PINS; i++) {
+    for (var i = 0; i < pinsData.length; i++) {
       var currentPin = window.data.renderPin(pinsData[i]);
       (function () {
         var pinData = pinsData[i];
@@ -49,7 +48,6 @@
     }
     setPinElement.appendChild(fragment);
   };
-
   window.pin = {
     removeMapCard: removeMapCard,
     renderPins: renderPins,

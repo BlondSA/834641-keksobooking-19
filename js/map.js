@@ -9,6 +9,8 @@
   var map = document.querySelector('.map');
   var formHeader = document.querySelector('.ad-form-header');
   var formElement = document.querySelectorAll('.ad-form__element');
+  var MAIN_PIN_START_POSITION_X = 601; // Начальная координата по оси X для главного пина
+  var MAIN_PIN_START_POSITION_Y = 406; // Начальная координата по оси Y для главного пина
 
 
   // Добавляем атрибут disabled для Fieldset-ов
@@ -32,8 +34,8 @@
   };
 
   var deactivationForm = function () {
-    map.classList.add('map--faded'); // Убираем класс-модификатор map--faded
-    document.querySelector('.ad-form').classList.add('ad-form--disabled'); // Убираем класс-модификатор ad-form--disabled
+    map.classList.add('map--faded'); // Добавляем класс-модификатор map--faded
+    document.querySelector('.ad-form').classList.add('ad-form--disabled'); // Добавляем класс-модификатор ad-form--disabled
     formHeader.setAttribute('disabled', 'disabled');
     clearPinsList();
     formElement = document.querySelectorAll('.ad-form__element');
@@ -49,11 +51,11 @@
       window.pin.removeMapCard(); // Удаляем старую карточку
     }
     var addressPin = document.querySelector('#address');
-    document.querySelector('.map__pin--main').style.left = 601 + 'px';
-    document.querySelector('.map__pin--main').style.top = 406 + 'px';
+    document.querySelector('.map__pin--main').style.left = MAIN_PIN_START_POSITION_X + 'px';
+    document.querySelector('.map__pin--main').style.top = MAIN_PIN_START_POSITION_Y + 'px';
     var coordinateMainPinInactive = function () {
-      var pinMainX = 601;
-      var pinMainY = 406;
+      var pinMainX = MAIN_PIN_START_POSITION_X;
+      var pinMainY = MAIN_PIN_START_POSITION_Y;
       return pinMainX + ', ' + pinMainY;
     };
     addressPin.value = coordinateMainPinInactive();
@@ -117,5 +119,6 @@
   var addressPin = document.querySelector('#address');
   addressPin.value = coordinateMainPinInactive();
 
-  window.map = {deactivationForm: deactivationForm};
+  window.map = {deactivationForm: deactivationForm,
+    clearPinsList: clearPinsList};
 })();
