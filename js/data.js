@@ -138,6 +138,7 @@
     window.map.clearPinsList();
     window.pin.renderPins(filterPins(window.data.pinsFromServer));
   };
+
   // Обработчик изменения типа помещения удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
   inputTypeHouse.addEventListener('change', function () {
     updatePins();
