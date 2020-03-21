@@ -1,15 +1,16 @@
 'use strict';
 
 (function () {
+  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+  var URL_UPLOAD = 'https://js.dump.academy/keksobooking';
+  var StatusCode = {
+    OK: 200
+  };
+  var TIMEOUT_IN_MS = 10000;
+
   var load = function (sendSuccesHandler, sendErrorHandler) {
-    var URL = 'https://js.dump.academy/keksobooking/data';
-    var StatusCode = {
-      OK: 200
-    };
-    var TIMEOUT_IN_MS = 10000;
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.OK) {
         sendSuccesHandler(xhr.response);
@@ -26,29 +27,24 @@
 
     xhr.timeout = TIMEOUT_IN_MS;
 
-    xhr.open('GET', URL);
+    xhr.open('GET', URL_LOAD);
     xhr.send();
   };
 
   var upload = function (data, sendSuccesHandler) {
-    var URL = 'https://js.dump.academy/keksobooking';
-    var StatusCode = {
-      OK: 200
-    };
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.OK) {
         sendSuccesHandler(xhr.response);
-        window.form.createSuccesMessage();
+        window.formMessage.createSuccesMessage();
       } else {
-        window.form.createErrorMessage();
+        window.formMessage.createErrorMessage();
       }
     });
-    xhr.open('POST', URL);
+    xhr.open('POST', URL_UPLOAD);
     xhr.send(data);
   };
 
-  window.backend = {load: load,
-    upload: upload};
+  window.backend = {load: load, upload: upload};
 })();

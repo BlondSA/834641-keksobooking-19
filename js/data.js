@@ -1,5 +1,7 @@
 'use strict';
+
 (function () {
+  var pinsArr = [];
   var pinTemplate = document
     .querySelector('#pin')
     .content.querySelector('.map__pin');
@@ -15,9 +17,43 @@
     return pinElement;
   };
 
+  // Фильтр изменения типа жилья
+  var anyValue = 'any';
+  var inputTypeHouse = document.querySelector('.map__filters #housing-type');
+
+  var houseTypeCheck = function (pins) {
+    if (inputTypeHouse.value === anyValue) {
+      return pins;
+    }
+    return pins.filter(function (pin) {
+      return pin.offer.type === inputTypeHouse.value;
+    });
+  };
+
+  var filterPins = function (pinsData) {
+    pinsArr = pinsData.slice();
+    pinsArr = houseTypeCheck(pinsArr);
+    return pinsArr.slice(0, 5);
+  };
+
+  var updatePins = function () {
+    var mapCard = document.querySelector('.map__card');
+    if (mapCard) {
+      window.pin.removeMapCard();
+    }
+    window.map.clearPinsList();
+    window.pin.renderPins(filterPins(window.data.pinsFromServer));
+  };
+
+  // Обработчик изменения типа помещения удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
+  inputTypeHouse.addEventListener('change', function () {
+    updatePins();
+  });
+
   // В случае успешного выполнения
   var sendSuccesHandler = function (pinsData) {
-    window.pin.renderPins(pinsData);
+    window.data.pinsFromServer = pinsData;
+    updatePins();
   };
 
   // В случае ошибки
@@ -35,8 +71,9 @@
   };
 
   window.data = {
+    pinsFromServer: [],
     renderPin: renderPin,
     sendSuccesHandler: sendSuccesHandler,
-    sendErrorHandler: sendErrorHandler
+    sendErrorHandler: sendErrorHandler,
   };
 })();
