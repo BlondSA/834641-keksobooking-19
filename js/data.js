@@ -22,16 +22,7 @@
     washer: 'washer',
     elevator: 'elevator',
     conditioner: 'conditioner'};
-  var timeType;
-  var timePrice;
-  var timeRooms;
-  var timeGuests;
-  var timeWifi;
-  var timeDishwasher;
-  var timeParking;
-  var timeWasher;
-  var timeElevator;
-  var timeConditioner;
+
 
   // Функция создающая массив собранных данных пользователей
   var renderPin = function (element) {
@@ -150,49 +141,39 @@
 
   // Обработчик изменения типа помещения удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
 
-  inputTypeHouse.addEventListener('change', window.debounce(function (element) {
-    timeType = element;
+  inputTypeHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
 
-  inputPriceHouse.addEventListener('change', window.debounce(function (element) {
-    timePrice = element;
+  inputPriceHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
 
-  inputRoomsHouse.addEventListener('change', window.debounce(function (element) {
-    timeRooms = element;
+  inputRoomsHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
 
-  inputGuestsHouse.addEventListener('change', window.debounce(function (element) {
-    timeGuests = element;
+  inputGuestsHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
 
-  inputWifiHouse.addEventListener('change', window.debounce(function (element) {
-    timeWifi = element;
+  inputWifiHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
 
-  inputDishwasherHouse.addEventListener('change', window.debounce(function (element) {
-    timeDishwasher = element;
+  inputDishwasherHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
-  inputParkingHouse.addEventListener('change', window.debounce(function (element) {
-    timeParking = element;
+  inputParkingHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
-  inputWasherHouse.addEventListener('change', window.debounce(function (element) {
-    timeWasher = element;
+  inputWasherHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
-  inputElevatorHouse.addEventListener('change', window.debounce(function (element) {
-    timeElevator = element;
+  inputElevatorHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
-  inputConditionerHouse.addEventListener('change', window.debounce(function (element) {
-    timeConditioner = element;
+  inputConditionerHouse.addEventListener('change', window.debounce(function () {
     updatePins();
   }));
 
