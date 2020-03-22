@@ -22,6 +22,16 @@
     washer: 'washer',
     elevator: 'elevator',
     conditioner: 'conditioner'};
+  var OFFER_VALUE_ZERO = 0;
+  var OFFER_VALUE_ONE = 1;
+  var OFFER_VALUE_TWO = 2;
+  var OFFER_VALUE_THREE = 3;
+  var MIN_VALUE = 10000;
+  var MAX_VALUE = 50000;
+  var VALUE_ZERO = '0';
+  var VALUE_ONE = '1';
+  var VALUE_TWO = '2';
+  var VALUE_THREE = '3';
 
 
   // Функция создающая массив собранных данных пользователей
@@ -49,36 +59,35 @@
       return pins;
     } else if (inputPriceHouse.value === 'middle') {
       return pins.filter(function (pin) {
-        return pin.offer.price <= 50000 && pin.offer.price >= 10000;
+        return pin.offer.price <= MAX_VALUE && pin.offer.price >= MIN_VALUE;
       });
     } else if (inputPriceHouse.value === 'low') {
       return pins.filter(function (pin) {
-        return pin.offer.price < 10000;
+        return pin.offer.price < MIN_VALUE;
       });
     } else if (inputPriceHouse.value === 'high') {
       return pins.filter(function (pin) {
-        return pin.offer.price > 50000;
+        return pin.offer.price > MAX_VALUE;
       });
     } else {
       return pins;
     }
   };
-
   // Фильтр кол-ва комнат в жилье
   var houseRoomCheck = function (pins) {
     if (inputRoomsHouse.value === ANY_VALUE) {
       return pins;
-    } else if (inputRoomsHouse.value === '1') {
+    } else if (inputRoomsHouse.value === VALUE_ONE) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === 1;
+        return pin.offer.rooms === OFFER_VALUE_ONE;
       });
-    } else if (inputRoomsHouse.value === '2') {
+    } else if (inputRoomsHouse.value === VALUE_TWO) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === 2;
+        return pin.offer.rooms === OFFER_VALUE_TWO;
       });
-    } else if (inputRoomsHouse.value === '3') {
+    } else if (inputRoomsHouse.value === VALUE_THREE) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === 3;
+        return pin.offer.rooms === OFFER_VALUE_THREE;
       });
     } else {
       return pins;
@@ -89,17 +98,17 @@
   var houseGuestsCheck = function (pins) {
     if (inputGuestsHouse.value === ANY_VALUE) {
       return pins;
-    } else if (inputGuestsHouse.value === '1') {
+    } else if (inputGuestsHouse.value === VALUE_ONE) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === 1;
+        return pin.offer.guests === OFFER_VALUE_ONE;
       });
-    } else if (inputGuestsHouse.value === '2') {
+    } else if (inputGuestsHouse.value === VALUE_TWO) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === 2;
+        return pin.offer.guests === OFFER_VALUE_TWO;
       });
-    } else if (inputGuestsHouse.value === '0') {
+    } else if (inputGuestsHouse.value === VALUE_ZERO) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === 0;
+        return pin.offer.guests === OFFER_VALUE_ZERO;
       });
     } else {
       return pins;
@@ -139,43 +148,22 @@
     window.pin.renderPins(filterPins(window.data.pinsFromServer));
   };
 
-  // Обработчик изменения типа помещения удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
 
-  inputTypeHouse.addEventListener('change', window.debounce(function () {
+  var changeFilterHandler = window.debounce(function () {
     updatePins();
-  }));
+  });
 
-  inputPriceHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputRoomsHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputGuestsHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputWifiHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputDishwasherHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputParkingHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputWasherHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputElevatorHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputConditionerHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
+  // Обработчик изменения фильтра удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
+  inputTypeHouse.addEventListener('change', changeFilterHandler);
+  inputPriceHouse.addEventListener('change', changeFilterHandler);
+  inputRoomsHouse.addEventListener('change', changeFilterHandler);
+  inputGuestsHouse.addEventListener('change', changeFilterHandler);
+  inputWifiHouse.addEventListener('change', changeFilterHandler);
+  inputDishwasherHouse.addEventListener('change', changeFilterHandler);
+  inputParkingHouse.addEventListener('change', changeFilterHandler);
+  inputWasherHouse.addEventListener('change', changeFilterHandler);
+  inputElevatorHouse.addEventListener('change', changeFilterHandler);
+  inputConditionerHouse.addEventListener('change', changeFilterHandler);
 
 
   // В случае успешного выполнения
