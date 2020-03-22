@@ -9,35 +9,45 @@
   var inputTypeHouse = document.querySelector('.map__filters #housing-type');
   var inputPriceHouse = document.querySelector('.map__filters #housing-price');
   var inputRoomsHouse = document.querySelector('.map__filters #housing-rooms');
-  var inputGuestsHouse = document.querySelector('.map__filters #housing-guests');
-  var inputWifiHouse = document.querySelector('.map__filters #housing-features #filter-wifi');
-  var inputDishwasherHouse = document.querySelector('.map__filters #housing-features #filter-dishwasher');
-  var inputParkingHouse = document.querySelector('.map__filters #housing-features #filter-parking');
-  var inputWasherHouse = document.querySelector('.map__filters #housing-features #filter-washer');
-  var inputElevatorHouse = document.querySelector('.map__filters #housing-features #filter-elevator');
-  var inputConditionerHouse = document.querySelector('.map__filters #housing-features #filter-conditioner');
-  var features = {wifi: 'wifi',
+  var inputGuestsHouse = document.querySelector(
+      '.map__filters #housing-guests'
+  );
+  var inputWifiHouse = document.querySelector(
+      '.map__filters #housing-features #filter-wifi'
+  );
+  var inputDishwasherHouse = document.querySelector(
+      '.map__filters #housing-features #filter-dishwasher'
+  );
+  var inputParkingHouse = document.querySelector(
+      '.map__filters #housing-features #filter-parking'
+  );
+  var inputWasherHouse = document.querySelector(
+      '.map__filters #housing-features #filter-washer'
+  );
+  var inputElevatorHouse = document.querySelector(
+      '.map__filters #housing-features #filter-elevator'
+  );
+  var inputConditionerHouse = document.querySelector(
+      '.map__filters #housing-features #filter-conditioner'
+  );
+  var features = {
+    wifi: 'wifi',
     dishwasher: 'dishwasher',
     parking: 'parking',
     washer: 'washer',
     elevator: 'elevator',
-    conditioner: 'conditioner'};
-  var OFFER_VALUE_ZERO = 0;
-  var OFFER_VALUE_ONE = 1;
-  var OFFER_VALUE_TWO = 2;
-  var OFFER_VALUE_THREE = 3;
+    conditioner: 'conditioner'
+  };
+  var OfferValue = {ZERO: 0, ONE: 1, TWO: 2, THREE: 3};
   var MIN_VALUE = 10000;
   var MAX_VALUE = 50000;
-  var VALUE_ZERO = '0';
-  var VALUE_ONE = '1';
-  var VALUE_TWO = '2';
-  var VALUE_THREE = '3';
-
+  var inputFilterValue = {zero: '0', one: '1', two: '2', three: '3'};
 
   // Функция создающая массив собранных данных пользователей
   var renderPin = function (element) {
     var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = element.location.x + pinElement.offsetWidth / 2 + 'px';
+    pinElement.style.left =
+      element.location.x + pinElement.offsetWidth / 2 + 'px';
     pinElement.style.top = element.location.y + pinElement.offsetHeight + 'px';
     pinElement.querySelector('img').src = element.author.avatar;
     pinElement.querySelector('img').alt = element.offer.title;
@@ -77,17 +87,17 @@
   var houseRoomCheck = function (pins) {
     if (inputRoomsHouse.value === ANY_VALUE) {
       return pins;
-    } else if (inputRoomsHouse.value === VALUE_ONE) {
+    } else if (inputRoomsHouse.value === inputFilterValue.one) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === OFFER_VALUE_ONE;
+        return pin.offer.rooms === OfferValue.one;
       });
-    } else if (inputRoomsHouse.value === VALUE_TWO) {
+    } else if (inputRoomsHouse.value === inputFilterValue.two) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === OFFER_VALUE_TWO;
+        return pin.offer.rooms === OfferValue.TWO;
       });
-    } else if (inputRoomsHouse.value === VALUE_THREE) {
+    } else if (inputRoomsHouse.value === inputFilterValue.three) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === OFFER_VALUE_THREE;
+        return pin.offer.rooms === OfferValue.THREE;
       });
     } else {
       return pins;
@@ -98,17 +108,17 @@
   var houseGuestsCheck = function (pins) {
     if (inputGuestsHouse.value === ANY_VALUE) {
       return pins;
-    } else if (inputGuestsHouse.value === VALUE_ONE) {
+    } else if (inputGuestsHouse.value === inputFilterValue.one) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === OFFER_VALUE_ONE;
+        return pin.offer.guests === OfferValue.ONE;
       });
-    } else if (inputGuestsHouse.value === VALUE_TWO) {
+    } else if (inputGuestsHouse.value === inputFilterValue.two) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === OFFER_VALUE_TWO;
+        return pin.offer.guests === OfferValue.TWO;
       });
-    } else if (inputGuestsHouse.value === VALUE_ZERO) {
+    } else if (inputGuestsHouse.value === inputFilterValue.zero) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === OFFER_VALUE_ZERO;
+        return pin.offer.guests === OfferValue.ZERO;
       });
     } else {
       return pins;
@@ -121,7 +131,8 @@
       return pins.filter(function (pin) {
         return pin.offer.features.includes(value);
       });
-    } return pins;
+    }
+    return pins;
   };
 
   var filterPins = function (pinsData) {
@@ -131,11 +142,23 @@
     pinsArr = houseRoomCheck(pinsArr);
     pinsArr = houseGuestsCheck(pinsArr);
     pinsArr = houseFeaturesCheck(inputWifiHouse, features.wifi, pinsArr);
-    pinsArr = houseFeaturesCheck(inputDishwasherHouse, features.dishwasher, pinsArr);
+    pinsArr = houseFeaturesCheck(
+        inputDishwasherHouse,
+        features.dishwasher,
+        pinsArr
+    );
     pinsArr = houseFeaturesCheck(inputParkingHouse, features.parking, pinsArr);
     pinsArr = houseFeaturesCheck(inputWasherHouse, features.washer, pinsArr);
-    pinsArr = houseFeaturesCheck(inputElevatorHouse, features.elevator, pinsArr);
-    pinsArr = houseFeaturesCheck(inputConditionerHouse, features.conditioner, pinsArr);
+    pinsArr = houseFeaturesCheck(
+        inputElevatorHouse,
+        features.elevator,
+        pinsArr
+    );
+    pinsArr = houseFeaturesCheck(
+        inputConditionerHouse,
+        features.conditioner,
+        pinsArr
+    );
     return pinsArr.slice(0, 5);
   };
 
@@ -147,7 +170,6 @@
     window.map.clearPinsList();
     window.pin.renderPins(filterPins(window.data.pinsFromServer));
   };
-
 
   var changeFilterHandler = window.debounce(function () {
     updatePins();
@@ -164,7 +186,6 @@
   inputWasherHouse.addEventListener('change', changeFilterHandler);
   inputElevatorHouse.addEventListener('change', changeFilterHandler);
   inputConditionerHouse.addEventListener('change', changeFilterHandler);
-
 
   // В случае успешного выполнения
   var sendSuccesHandler = function (pinsData) {
@@ -190,6 +211,6 @@
     pinsFromServer: [],
     renderPin: renderPin,
     sendSuccesHandler: sendSuccesHandler,
-    sendErrorHandler: sendErrorHandler,
+    sendErrorHandler: sendErrorHandler
   };
 })();
