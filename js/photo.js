@@ -2,6 +2,8 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var IMAGE_WIDTH = '70';
+  var IMAGE_HEIGHT = '70';
 
   var fileChooser = document.querySelector('.ad-form__upload #images');
   var preview = document.querySelector('.ad-form__photo');
@@ -17,13 +19,11 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        var fragment = document.createDocumentFragment();
         var img = document.createElement('img');
         img.src = reader.result;
-        img.width = '70';
-        img.height = '70';
-        fragment.appendChild(img);
-        preview.appendChild(fragment);
+        img.width = IMAGE_WIDTH;
+        img.height = IMAGE_HEIGHT;
+        preview.appendChild(img);
       });
 
       reader.readAsDataURL(file);

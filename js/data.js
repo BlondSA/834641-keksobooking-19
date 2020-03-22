@@ -9,25 +9,45 @@
   var inputTypeHouse = document.querySelector('.map__filters #housing-type');
   var inputPriceHouse = document.querySelector('.map__filters #housing-price');
   var inputRoomsHouse = document.querySelector('.map__filters #housing-rooms');
-  var inputGuestsHouse = document.querySelector('.map__filters #housing-guests');
-  var inputWifiHouse = document.querySelector('.map__filters #housing-features #filter-wifi');
-  var inputDishwasherHouse = document.querySelector('.map__filters #housing-features #filter-dishwasher');
-  var inputParkingHouse = document.querySelector('.map__filters #housing-features #filter-parking');
-  var inputWasherHouse = document.querySelector('.map__filters #housing-features #filter-washer');
-  var inputElevatorHouse = document.querySelector('.map__filters #housing-features #filter-elevator');
-  var inputConditionerHouse = document.querySelector('.map__filters #housing-features #filter-conditioner');
-  var features = {wifi: 'wifi',
+  var inputGuestsHouse = document.querySelector(
+      '.map__filters #housing-guests'
+  );
+  var inputWifiHouse = document.querySelector(
+      '.map__filters #housing-features #filter-wifi'
+  );
+  var inputDishwasherHouse = document.querySelector(
+      '.map__filters #housing-features #filter-dishwasher'
+  );
+  var inputParkingHouse = document.querySelector(
+      '.map__filters #housing-features #filter-parking'
+  );
+  var inputWasherHouse = document.querySelector(
+      '.map__filters #housing-features #filter-washer'
+  );
+  var inputElevatorHouse = document.querySelector(
+      '.map__filters #housing-features #filter-elevator'
+  );
+  var inputConditionerHouse = document.querySelector(
+      '.map__filters #housing-features #filter-conditioner'
+  );
+  var features = {
+    wifi: 'wifi',
     dishwasher: 'dishwasher',
     parking: 'parking',
     washer: 'washer',
     elevator: 'elevator',
-    conditioner: 'conditioner'};
-
+    conditioner: 'conditioner'
+  };
+  var OfferValue = {ZERO: 0, ONE: 1, TWO: 2, THREE: 3};
+  var MIN_VALUE = 10000;
+  var MAX_VALUE = 50000;
+  var inputFilterValue = {zero: '0', one: '1', two: '2', three: '3'};
 
   // Функция создающая массив собранных данных пользователей
   var renderPin = function (element) {
     var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = element.location.x + pinElement.offsetWidth / 2 + 'px';
+    pinElement.style.left =
+      element.location.x + pinElement.offsetWidth / 2 + 'px';
     pinElement.style.top = element.location.y + pinElement.offsetHeight + 'px';
     pinElement.querySelector('img').src = element.author.avatar;
     pinElement.querySelector('img').alt = element.offer.title;
@@ -49,36 +69,35 @@
       return pins;
     } else if (inputPriceHouse.value === 'middle') {
       return pins.filter(function (pin) {
-        return pin.offer.price <= 50000 && pin.offer.price >= 10000;
+        return pin.offer.price <= MAX_VALUE && pin.offer.price >= MIN_VALUE;
       });
     } else if (inputPriceHouse.value === 'low') {
       return pins.filter(function (pin) {
-        return pin.offer.price < 10000;
+        return pin.offer.price < MIN_VALUE;
       });
     } else if (inputPriceHouse.value === 'high') {
       return pins.filter(function (pin) {
-        return pin.offer.price > 50000;
+        return pin.offer.price > MAX_VALUE;
       });
     } else {
       return pins;
     }
   };
-
   // Фильтр кол-ва комнат в жилье
   var houseRoomCheck = function (pins) {
     if (inputRoomsHouse.value === ANY_VALUE) {
       return pins;
-    } else if (inputRoomsHouse.value === '1') {
+    } else if (inputRoomsHouse.value === inputFilterValue.one) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === 1;
+        return pin.offer.rooms === OfferValue.one;
       });
-    } else if (inputRoomsHouse.value === '2') {
+    } else if (inputRoomsHouse.value === inputFilterValue.two) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === 2;
+        return pin.offer.rooms === OfferValue.TWO;
       });
-    } else if (inputRoomsHouse.value === '3') {
+    } else if (inputRoomsHouse.value === inputFilterValue.three) {
       return pins.filter(function (pin) {
-        return pin.offer.rooms === 3;
+        return pin.offer.rooms === OfferValue.THREE;
       });
     } else {
       return pins;
@@ -89,17 +108,17 @@
   var houseGuestsCheck = function (pins) {
     if (inputGuestsHouse.value === ANY_VALUE) {
       return pins;
-    } else if (inputGuestsHouse.value === '1') {
+    } else if (inputGuestsHouse.value === inputFilterValue.one) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === 1;
+        return pin.offer.guests === OfferValue.ONE;
       });
-    } else if (inputGuestsHouse.value === '2') {
+    } else if (inputGuestsHouse.value === inputFilterValue.two) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === 2;
+        return pin.offer.guests === OfferValue.TWO;
       });
-    } else if (inputGuestsHouse.value === '0') {
+    } else if (inputGuestsHouse.value === inputFilterValue.zero) {
       return pins.filter(function (pin) {
-        return pin.offer.guests === 0;
+        return pin.offer.guests === OfferValue.ZERO;
       });
     } else {
       return pins;
@@ -112,7 +131,8 @@
       return pins.filter(function (pin) {
         return pin.offer.features.includes(value);
       });
-    } return pins;
+    }
+    return pins;
   };
 
   var filterPins = function (pinsData) {
@@ -122,11 +142,23 @@
     pinsArr = houseRoomCheck(pinsArr);
     pinsArr = houseGuestsCheck(pinsArr);
     pinsArr = houseFeaturesCheck(inputWifiHouse, features.wifi, pinsArr);
-    pinsArr = houseFeaturesCheck(inputDishwasherHouse, features.dishwasher, pinsArr);
+    pinsArr = houseFeaturesCheck(
+        inputDishwasherHouse,
+        features.dishwasher,
+        pinsArr
+    );
     pinsArr = houseFeaturesCheck(inputParkingHouse, features.parking, pinsArr);
     pinsArr = houseFeaturesCheck(inputWasherHouse, features.washer, pinsArr);
-    pinsArr = houseFeaturesCheck(inputElevatorHouse, features.elevator, pinsArr);
-    pinsArr = houseFeaturesCheck(inputConditionerHouse, features.conditioner, pinsArr);
+    pinsArr = houseFeaturesCheck(
+        inputElevatorHouse,
+        features.elevator,
+        pinsArr
+    );
+    pinsArr = houseFeaturesCheck(
+        inputConditionerHouse,
+        features.conditioner,
+        pinsArr
+    );
     return pinsArr.slice(0, 5);
   };
 
@@ -139,44 +171,21 @@
     window.pin.renderPins(filterPins(window.data.pinsFromServer));
   };
 
-  // Обработчик изменения типа помещения удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
+  var changeFilterHandler = window.debounce(function () {
+    updatePins();
+  });
 
-  inputTypeHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputPriceHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputRoomsHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputGuestsHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputWifiHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
-  inputDishwasherHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputParkingHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputWasherHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputElevatorHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-  inputConditionerHouse.addEventListener('change', window.debounce(function () {
-    updatePins();
-  }));
-
+  // Обработчик изменения фильтра удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
+  inputTypeHouse.addEventListener('change', changeFilterHandler);
+  inputPriceHouse.addEventListener('change', changeFilterHandler);
+  inputRoomsHouse.addEventListener('change', changeFilterHandler);
+  inputGuestsHouse.addEventListener('change', changeFilterHandler);
+  inputWifiHouse.addEventListener('change', changeFilterHandler);
+  inputDishwasherHouse.addEventListener('change', changeFilterHandler);
+  inputParkingHouse.addEventListener('change', changeFilterHandler);
+  inputWasherHouse.addEventListener('change', changeFilterHandler);
+  inputElevatorHouse.addEventListener('change', changeFilterHandler);
+  inputConditionerHouse.addEventListener('change', changeFilterHandler);
 
   // В случае успешного выполнения
   var sendSuccesHandler = function (pinsData) {
@@ -202,6 +211,6 @@
     pinsFromServer: [],
     renderPin: renderPin,
     sendSuccesHandler: sendSuccesHandler,
-    sendErrorHandler: sendErrorHandler,
+    sendErrorHandler: sendErrorHandler
   };
 })();
