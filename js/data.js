@@ -10,7 +10,6 @@
   var inputPriceHouse = document.querySelector('.map__filters #housing-price');
   var inputRoomsHouse = document.querySelector('.map__filters #housing-rooms');
   var inputGuestsHouse = document.querySelector('.map__filters #housing-guests');
-  var inputFeaturesHouse = document.querySelector('.map__filters #housing-features');
   var inputWifiHouse = document.querySelector('.map__filters #housing-features #filter-wifi');
   var inputDishwasherHouse = document.querySelector('.map__filters #housing-features #filter-dishwasher');
   var inputParkingHouse = document.querySelector('.map__filters #housing-features #filter-parking');
@@ -23,6 +22,16 @@
     washer: 'washer',
     elevator: 'elevator',
     conditioner: 'conditioner'};
+  var timeType;
+  var timePrice;
+  var timeRooms;
+  var timeGuests;
+  var timeWifi;
+  var timeDishwasher;
+  var timeParking;
+  var timeWasher;
+  var timeElevator;
+  var timeConditioner;
 
   // Функция создающая массив собранных данных пользователей
   var renderPin = function (element) {
@@ -140,25 +149,53 @@
   };
 
   // Обработчик изменения типа помещения удаляющий открытую карточку и генерирующий новый массив с учётом фильтра
-  inputTypeHouse.addEventListener('change', function () {
-    updatePins();
-  });
 
-  inputPriceHouse.addEventListener('change', function () {
+  inputTypeHouse.addEventListener('change', window.debounce(function (element) {
+    timeType = element;
     updatePins();
-  });
+  }));
 
-  inputRoomsHouse.addEventListener('change', function () {
+  inputPriceHouse.addEventListener('change', window.debounce(function (element) {
+    timePrice = element;
     updatePins();
-  });
+  }));
 
-  inputGuestsHouse.addEventListener('change', function () {
+  inputRoomsHouse.addEventListener('change', window.debounce(function (element) {
+    timeRooms = element;
     updatePins();
-  });
+  }));
 
-  inputFeaturesHouse.addEventListener('change', function () {
+  inputGuestsHouse.addEventListener('change', window.debounce(function (element) {
+    timeGuests = element;
     updatePins();
-  });
+  }));
+
+  inputWifiHouse.addEventListener('change', window.debounce(function (element) {
+    timeWifi = element;
+    updatePins();
+  }));
+
+  inputDishwasherHouse.addEventListener('change', window.debounce(function (element) {
+    timeDishwasher = element;
+    updatePins();
+  }));
+  inputParkingHouse.addEventListener('change', window.debounce(function (element) {
+    timeParking = element;
+    updatePins();
+  }));
+  inputWasherHouse.addEventListener('change', window.debounce(function (element) {
+    timeWasher = element;
+    updatePins();
+  }));
+  inputElevatorHouse.addEventListener('change', window.debounce(function (element) {
+    timeElevator = element;
+    updatePins();
+  }));
+  inputConditionerHouse.addEventListener('change', window.debounce(function (element) {
+    timeConditioner = element;
+    updatePins();
+  }));
+
 
   // В случае успешного выполнения
   var sendSuccesHandler = function (pinsData) {
