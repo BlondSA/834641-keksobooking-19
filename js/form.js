@@ -1,8 +1,6 @@
 'use strict';
 (function () {
   // Валидация формы ввода
-
-  // Валидация кол-ва человек в зависимости от кол-ва комнат
   var addForm = document.querySelector('.ad-form');
   var roomQuantityInput = addForm.querySelector('#room_number');
   var guestQuantityInput = addForm.querySelector('#capacity');
@@ -14,6 +12,7 @@
   var inputValidationValue = {zero: '0', one: '1', two: '2', three: '3', hundred: '100'};
   var RADIX = 10;
 
+  // Валидация кол-ва человек в зависимости от кол-ва комнат
   addForm.addEventListener('change', function () {
     if (
       (roomQuantityInput.value === inputValidationValue.one && guestQuantityInput.value === inputValidationValue.two) ||
@@ -65,7 +64,6 @@
   });
 
   // Валидация времени въезда и времени выезда
-
   addForm.addEventListener('change', function () {
     if (parseInt(timeInInput.value, RADIX) !== parseInt(timeOutInput.value, RADIX)) {
       timeOutInput.setCustomValidity(
@@ -75,6 +73,18 @@
       timeOutInput.setCustomValidity('');
     }
   });
+
+  // Синхронизация формы время заезда и время выезда
+  var changeCheckInTimeHandler = function () {
+    timeOutInput.value = timeInInput.value;
+  };
+
+  var changeCheckOutTimeHandler = function () {
+    timeInInput.value = timeOutInput.value;
+  };
+
+  timeInInput.addEventListener('change', changeCheckInTimeHandler);
+  timeOutInput.addEventListener('change', changeCheckOutTimeHandler);
 
   // Валидация типа жилья и цены
   var selectChangeHandler = function () {

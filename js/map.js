@@ -9,8 +9,9 @@
   var map = document.querySelector('.map');
   var formHeader = document.querySelector('.ad-form-header');
   var formElement = document.querySelectorAll('.ad-form__element');
-  var MAIN_PIN_START_POSITION_X = 601; // Начальная координата по оси X для главного пина
-  var MAIN_PIN_START_POSITION_Y = 406; // Начальная координата по оси Y для главного пина
+  var MAIN_PIN_START_POSITION_X = 570; // Начальная координата по оси X для главного пина 601
+  var MAIN_PIN_START_POSITION_Y = 375; // Начальная координата по оси Y для главного пина 406
+  var formReset = document.querySelector('.ad-form__reset');
 
 
   // Добавляем атрибут disabled для Fieldset-ов
@@ -54,11 +55,13 @@
     document.querySelector('.map__pin--main').style.left = MAIN_PIN_START_POSITION_X + 'px';
     document.querySelector('.map__pin--main').style.top = MAIN_PIN_START_POSITION_Y + 'px';
     var coordinateMainPinInactive = function () {
-      var pinMainX = MAIN_PIN_START_POSITION_X;
-      var pinMainY = MAIN_PIN_START_POSITION_Y;
+      var pinMainX = MAIN_PIN_START_POSITION_X + PIN_MAIN_SHIFT_X;
+      var pinMainY = MAIN_PIN_START_POSITION_Y + PIN_MAIN_SHIFT_Y;
       return pinMainX + ', ' + pinMainY;
     };
     addressPin.value = coordinateMainPinInactive();
+    formReset.removeEventListener('keydown', pushResetButtonHendler);
+    formReset.removeEventListener('mousedown', pushResetButtonHendler);
   };
 
   // Функция активации сценария
@@ -73,6 +76,8 @@
       var formItem = formElement[j];
       formItem.removeAttribute('disabled', 'disabled');
     }
+    formReset.addEventListener('keydown', pushResetButtonHendler);
+    formReset.addEventListener('mousedown', pushResetButtonHendler);
   };
 
 
@@ -94,6 +99,10 @@
     if (evt.keyCode === window.utils.ENTER_BUTTON) {
       activePinsMap();
     }
+  };
+
+  var pushResetButtonHendler = function () {
+    deactivationForm();
   };
 
   // Сенарии
